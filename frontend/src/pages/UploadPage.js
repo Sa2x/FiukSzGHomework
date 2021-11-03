@@ -1,12 +1,12 @@
 import React from "react";
 import {Typography} from "@mui/material";
 
-export default function HomePage() {
+export default function UploadPage() {
 
     return (
         <div>
             <Typography variant="h1">
-                This is Home Page
+                This is Upload Page
             </Typography>
         </div>
     );

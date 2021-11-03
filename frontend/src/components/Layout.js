@@ -8,7 +8,7 @@ const drawerWidth = 240
 const useStyles = makeStyles((theme) => {
     return {
         root: {
-            dispay: 'flex'
+            display: 'flex'
         },
         page: {
             background: '#f9f9f9',

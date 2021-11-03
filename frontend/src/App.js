@@ -3,6 +3,8 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import {amber} from "@mui/material/colors";
+import UploadPage from "./pages/UploadPage";
+import ProfilesPage from "./pages/ProfilesPage";
 
 const theme = createTheme({
     palette: {
@@ -25,6 +27,12 @@ export default function App() {
                     <Switch>
                         <Route exact path="/">
                             <HomePage />
+                        </Route>
+                        <Route exact path="/upload">
+                            <UploadPage />
+                        </Route>
+                        <Route exact path="/profiles">
+                            <ProfilesPage />
                         </Route>
                     </Switch>
                 </Layout>

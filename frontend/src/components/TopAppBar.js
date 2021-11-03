@@ -1,14 +1,21 @@
 import React from "react";
-import {AppBar, Toolbar, Typography} from "@mui/material";
+import {AppBar, Avatar, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles({
-   appbar: {
-       width: `calc(100% - ${drawerWidth}px)`
-   }
-});
+const useStyles = makeStyles((theme) => {
+    return {
+    appbar: {
+        width: 'calc(100% - ${drawerWidth}px)'
+    },
+    avatar: {
+        marginLeft: theme.spacing(2)
+    },
+    title: {
+        flexGrow: 1
+    }
+}});
 
 export default function TopAppBar() {
     const classes = useStyles();
@@ -20,9 +27,11 @@ export default function TopAppBar() {
             elevation={0}
         >
             <Toolbar>
-                <Typography>
+                <Typography className={classes.title}>
                     Fiuk's Image Store
                 </Typography>
+                <Typography>Snoopy</Typography>
+                <Avatar src="snoopy.png" className={classes.avatar}/>
             </Toolbar>
         </AppBar>
     );
