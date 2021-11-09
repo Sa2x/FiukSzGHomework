@@ -4,12 +4,12 @@
 #include "CaffParser.h"
 
 int main() {
-    std::ifstream fin("/home/sasa/data1/projects/FiukSzGHomework/caffparser/caffs/3.caff",std::ios::out | std::ios::binary);
+    std::ifstream fin("/home/sasa/data1/projects/FiukSzGHomework/caffparser/caffs/1.caff", std::ios::binary);
     if(!fin){
         std::cout<<"baaj";
     }
     CaffParser parser(fin);
 
-    parser.parseHeader();
+    parser.parse();
     return 0;
 }

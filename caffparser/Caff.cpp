@@ -4,10 +4,24 @@
 
 #include "Caff.h"
 
-void Caff::setNumberOfAnim(int num) {
+void Caff::setNumberOfAnim(unsigned long num) {
     this->numberOfAnim = num;
 }
 
-int Caff::getNumberOfAnim(){
+unsigned long Caff::getNumberOfAnim(){
     return this->numberOfAnim;
 }
+
+void Caff::setCredits(int y, int m, int d, int h, int mi, std::string _creator) {
+    this->creditYear=y;
+    this->creditMonth=m;
+    this->creditDay=d;
+    this->creditHour=h;
+    this->creditMinute=mi;
+    this->creator=_creator;
+}
+
+Caff::Caff() {
+
+}
+

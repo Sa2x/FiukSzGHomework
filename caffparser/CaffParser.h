@@ -13,9 +13,26 @@ class CaffParser {
 private:
     std::ifstream& fr;
     Caff caff;
+    unsigned long eightbytestoint(char* arr);
+
+    void parseBlock();
+
+    void parseAnimation(unsigned long length);
+
+    void parseHeader();
+
+    int parseId();
 public:
     CaffParser(std::ifstream &fr);
-    void parseHeader();
+
+
+
+    void parse();
+
+
+    unsigned long parseEightBytesToInt();
+
+    void parseCredentials(unsigned long length);
 };
 
 
