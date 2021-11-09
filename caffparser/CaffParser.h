@@ -6,9 +6,16 @@
 #define CAFFPARSER_CAFFPARSER_H
 
 
+#include <fstream>
+#include "Caff.h"
+
 class CaffParser {
-
-
+private:
+    std::ifstream& fr;
+    Caff caff;
+public:
+    CaffParser(std::ifstream &fr);
+    void parseHeader();
 };
 
 
