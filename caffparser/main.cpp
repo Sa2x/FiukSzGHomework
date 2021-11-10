@@ -5,11 +5,15 @@
 #include <stdexcept>
 #include "CaffParser.h"
 
-int main() {
-    std::string input_line;
-    std::getline(std::cin, input_line);
-    //std::cin >> input_line;
-    std::ifstream fin(input_line, std::ios::binary);
+int main(int argc, char *argv[]) {
+    std::string file_name;
+    if(argc == 2) {
+        file_name = argv[1];
+    }
+    else{
+        std::cout << "Please give the parse to be file";
+    }
+    std::ifstream fin(file_name, std::ios::binary);
     if(!fin){
         throw std::invalid_argument("Wrong file name!");
     }
