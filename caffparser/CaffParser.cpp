@@ -4,7 +4,9 @@
 
 #include <iostream>
 #include <cstring>
+#include <exception>
 #include <vector>
+#include <string>
 #include "CaffParser.h"
 CaffParser::CaffParser( std::ifstream &fr) : fr(fr) {
     this->caff = Caff();
@@ -13,7 +15,7 @@ CaffParser::CaffParser( std::ifstream &fr) : fr(fr) {
 void CaffParser::parseHeader(){
     int block_id = parseId();
     if (block_id != 1){
-        std::cout<<"probleem"<<'\n';
+        throw std::exception("Block ID cannot be 1");
     }
 
     unsigned long blocklength = parseEightBytesToInt();
@@ -22,7 +24,7 @@ void CaffParser::parseHeader(){
     fr.read((char*) magic, 4);
     magic[4] = '\0';
     if(strcmp(magic,"CAFF") != 0){
-        std::cout<<"Probleeeem"<<'\n';
+        throw std::exception("File must have CAFF written in it!");
     }
 
 
@@ -75,7 +77,7 @@ void CaffParser::parseCredentials(unsigned long length){
 
     unsigned int creatorlength = parseEightBytesToInt();
     if(length!=creatorlength+14){
-        std::cout<<"Baj vaaaan";
+        throw std::exception("Wrong creator length!");
     }
     char creatorname[creatorlength];
     fr.read((char*) creatorname,creatorlength);
@@ -89,7 +91,7 @@ void CaffParser::parseAnimation(unsigned long length){
     fr.read((char*) magic, 4);
     magic[4] = '\0';
     if(strcmp(magic,"CIFF") != 0){
-        std::cout<<"Probleeeem"<<'\n';
+        throw std::exception("File must have CIFF written in it!");
     }
     unsigned long headerlength = parseEightBytesToInt();
     unsigned long contentlength = parseEightBytesToInt();
@@ -98,7 +100,7 @@ void CaffParser::parseAnimation(unsigned long length){
     unsigned long remainingbytes = headerlength-36;
 
     if(contentlength != width*height*3){
-        std::cout<<"nemjoooooo";
+        throw std::exception("Width times height is not equals to content length!");
     }
     std::string caption;
     if(remainingbytes>0) {
@@ -111,14 +113,14 @@ void CaffParser::parseAnimation(unsigned long length){
         std::string tag;
         std::getline(fr, tag, '\0');
         if(tag.length()>remainingbytes){
-            std::cout<<"nemjooo";
+            throw std::exception("Parsing error!");
             break;
         }
         remainingbytes-=tag.length()+1;
         tags.push_back(tag);
     }
     if(length-contentlength != headerlength+8){
-        std::cout<<"nem jooo";
+        throw std::exception("Parsing error!");
     }
     std::vector<int> pixels;
     int begin = fr.tellg();
@@ -129,7 +131,7 @@ void CaffParser::parseAnimation(unsigned long length){
     }
     int end = fr.tellg();
     if(end-begin != contentlength){
-        std::cout<<"nem jooo";
+        throw std::exception("Parsing error!");
     }
 
     caff.addCiff(Ciff(duration,width,height, pixels,caption, tags));
