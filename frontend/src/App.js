@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import {createTheme, ThemeProvider} from "@mui/material";
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import Layout from "./components/Layout";
+import HomePage from "./pages/HomePage";
+import {amber} from "@mui/material/colors";
+import UploadPage from "./pages/UploadPage";
+import ProfilesPage from "./pages/ProfilesPage";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const theme = createTheme({
+    palette: {
+        primary: amber
+    },
+    typography: {
+        fontFamily: 'Quicksand',
+        fontWeightLight: 400,
+        fontWeightRegular: 500,
+        fontWeightMedium: 600,
+        fontWeightBold: 700,
+    }
+});
+
+export default function App() {
+    return (
+        <ThemeProvider theme={theme}>
+            <Router>
+                <Layout>
+                    <Switch>
+                        <Route exact path="/">
+                            <HomePage />
+                        </Route>
+                        <Route exact path="/upload">
+                            <UploadPage />
+                        </Route>
+                        <Route exact path="/profiles">
+                            <ProfilesPage />
+                        </Route>
+                    </Switch>
+                </Layout>
+            </Router>
+        </ThemeProvider>
+    );
 }
-
-export default App;
