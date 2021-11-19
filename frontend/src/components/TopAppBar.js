@@ -1,6 +1,7 @@
 import React from "react";
 import {AppBar, Avatar, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
+import {useHistory} from "react-router-dom";
 
 const drawerWidth = 240;
 
