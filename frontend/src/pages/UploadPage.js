@@ -2,9 +2,9 @@ import React from "react";
 import {RadioGroup, Typography, Radio, TextField, FormControlLabel, FormLabel, FormControl} from "@mui/material";
 import {Button} from "@mui/material";
 import {Container} from "@mui/material";
-// import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {makeStyles} from "@mui/styles";
 import {useHistory} from 'react-router-dom'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const useStyles = makeStyles((theme) => ({
     field: {
@@ -26,7 +26,7 @@ export default function UploadPage() {
                 color="primary"
                 gutterBottom
             >
-                Create a New Note
+                Upload Image
             </Typography>
 
             <form
@@ -37,39 +37,21 @@ export default function UploadPage() {
                 <TextField
                     className={classes.field}
                     // onChange={(event) => setTitle(event.target.value)}
-                    label="Note Title"
+                    label="Image name"
                     variant="outlined"
                     fullWidth
                     required
                     // error={titleError}
                 />
-                <TextField
-                    className={classes.field}
-                    // onChange={(event) => setDetails(event.target.value)}
-                    label="Details"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    multiline
-                    rows={4}
-                    // error={detailsError}
-                />
-
-                {/*<FormControl className={classes.field}>*/}
-                {/*    <FormLabel>Note Category</FormLabel>*/}
-                {/*    <RadioGroup value={category} onChange={(event) => setCategory(event.target.value)}>*/}
-                {/*        <FormControlLabel value="money" control={<Radio/>} label="Money"/>*/}
-                {/*        <FormControlLabel value="todos" control={<Radio/>} label="Todos"/>*/}
-                {/*        <FormControlLabel value="reminders" control={<Radio/>} label="Reminders"/>*/}
-                {/*        <FormControlLabel value="work" control={<Radio/>} label="Work"/>*/}
-                {/*    </RadioGroup>*/}
-                {/*</FormControl>*/}
+                <div className={classes.field} >
+                    <input type="file" />
+                </div>
 
                 <Button
                     variant="contained"
                     type="submit"
                     color="primary"
-                    // endIcon={<KeyboardArrowRightIcon/>}
+                    endIcon={<KeyboardArrowRightIcon/>}
                 >
                     Submit
                 </Button>
