@@ -1,9 +1,6 @@
 package szgbizt.fiuk.backend.Models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -14,8 +11,8 @@ public class Comment {
 
     private String comment;
 
-    @OneToOne
-    private Profile createdBy;
+    @ManyToOne
+    private User createdBy;
 
     private Date createdAt;
 

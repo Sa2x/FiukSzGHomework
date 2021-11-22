@@ -16,7 +16,7 @@ public class Image {
     private String caffFile;
 
     @ManyToOne
-    private Profile uploadedBy;
+    private User uploadedBy;
 
     private String createdBy;
 

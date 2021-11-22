@@ -3,7 +3,7 @@ package szgbizt.fiuk.backend.Models;
 import javax.persistence.*;
 
 @Entity
-public class Profile {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
