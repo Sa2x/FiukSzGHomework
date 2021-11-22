@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {RadioGroup, Typography, Radio, TextField, FormControlLabel, FormLabel, FormControl} from "@mui/material";
 import {Button} from "@mui/material";
 import {Container} from "@mui/material";
@@ -18,6 +18,33 @@ export default function UploadPage() {
     const classes = useStyles()
     const history = useHistory()
 
+    const [title, setTitle] = useState('')
+    const [titleError, setTitleError] = useState(false)
+
+    const caff_file = useState('asd')
+    const uploaded_by = useState("Sándor a királyunk")
+    const created_by = "Beni a bátor"
+    const created_at = "2021.11.22. 20:00"
+    const comments = ""
+
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        setTitleError(false)
+
+        if (title === '') {
+            setTitleError(true)
+        }
+
+        if(title) {
+            fetch('http://localhost:8000/images', {
+                method: 'POST',
+                header: {"Content-type": "application/json"},
+                body: JSON.stringify({title, caff_file, uploaded_by, created_by, created_at, comments})
+            }).then(() => history.push('/'))
+        }
+    }
+
     return (
         <Container>
             <Typography
@@ -32,16 +59,16 @@ export default function UploadPage() {
             <form
                 noValidate
                 autoComplete="off"
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
             >
                 <TextField
                     className={classes.field}
-                    // onChange={(event) => setTitle(event.target.value)}
+                    onChange={(event) => setTitle(event.target.value)}
                     label="Image name"
                     variant="outlined"
                     fullWidth
                     required
-                    // error={titleError}
+                    error={titleError}
                 />
                 <div className={classes.field} >
                     <input type="file" />

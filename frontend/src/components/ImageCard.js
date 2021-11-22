@@ -2,18 +2,36 @@ import {Avatar, Card, CardContent, CardHeader, IconButton, Typography} from "@mu
 import React from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UploadIcon from '@mui/icons-material/Upload';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import {makeStyles} from "@mui/styles";
 
-export default function ImageCard() {
+const useStyle = makeStyles(() => ({
+    subheader: {
+        display: 'flex',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+    },
+}));
+
+export default function ImageCard({image}) {
+    const classes = useStyle();
+
     return (
         <div>
             <Card>
                 <CardHeader
-                    title="A vilag legszebb kepe"
+                    title={image.title}
                     subheader={
                         <div>
-                            <PersonIcon/>
-                            <Typography>Sándor a királyunk</Typography>
+                            <div className={classes.subheader}>
+                                <PersonIcon/>
+                                <Typography>{image.created_by}</Typography>
+                            </div>
+                            <div className={classes.subheader}>
+                                <UploadIcon/>
+                                <Typography>{image.uploaded_by}</Typography>
+                            </div>
                         </div>
                     }
                     action={
