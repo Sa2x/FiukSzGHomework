@@ -22,8 +22,8 @@ export default function UploadPage() {
     const [titleError, setTitleError] = useState(false)
 
     const caff_file = useState('asd')
-    const uploaded_by = useState("Sándor a királyunk")
-    const created_by = "Beni a bátor"
+    const uploaded_by = useState("Beni a bátor")
+    const created_by = "Sándor a királyunk"
     const created_at = "2021.11.22. 20:00"
     const comments = ""
 
@@ -39,7 +39,7 @@ export default function UploadPage() {
         if(title) {
             fetch('http://localhost:8000/images', {
                 method: 'POST',
-                header: {"Content-type": "application/json"},
+                headers: {"Content-type": "application/json"},
                 body: JSON.stringify({title, caff_file, uploaded_by, created_by, created_at, comments})
             }).then(() => history.push('/'))
         }

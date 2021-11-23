@@ -3,7 +3,7 @@ import {Drawer, List, ListItem, ListItemText, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
 
-const drawerWidth = 240
+const drawerWidth = 100
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => {
         },
         title: {
             padding: theme.spacing(2)
-        },
+        }
     };
 });
 

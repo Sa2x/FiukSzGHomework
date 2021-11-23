@@ -21,6 +21,15 @@ export default function HomePage() {
         700: 1,
     }
 
+    const handleDelete = async (id) => {
+        await fetch('http://localhost:8000/images/' + id, {
+            method: 'DELETE'
+        })
+
+        const newImages = images.filter(image => image.id !== id)
+        setImages(newImages)
+    }
+
     return (
         <Container>
             <Masonry
@@ -30,7 +39,7 @@ export default function HomePage() {
             >
                 {images.map(image => (
                     <div key={image.id}>
-                        <ImageCard image={image} /* handleDelete={handleDelete} *//>
+                        <ImageCard image={image} handleDelete={handleDelete} />
                     </div>
                 ))}
             </Masonry>

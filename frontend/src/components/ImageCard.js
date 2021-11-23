@@ -4,6 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import EditIcon from '@mui/icons-material/Edit';
 import {makeStyles} from "@mui/styles";
 
 const useStyle = makeStyles(() => ({
@@ -14,7 +15,7 @@ const useStyle = makeStyles(() => ({
     },
 }));
 
-export default function ImageCard({image}) {
+export default function ImageCard({image, handleDelete}) {
     const classes = useStyle();
 
     return (
@@ -37,10 +38,13 @@ export default function ImageCard({image}) {
                     action={
                         <div>
                             <IconButton>
-                                <DeleteIcon/>
+                                <AddCommentIcon/>
                             </IconButton>
                             <IconButton>
-                                <AddCommentIcon/>
+                                <EditIcon/>
+                            </IconButton>
+                            <IconButton onClick={() => handleDelete(image.id)}>
+                                <DeleteIcon/>
                             </IconButton>
                         </div>
                     }
