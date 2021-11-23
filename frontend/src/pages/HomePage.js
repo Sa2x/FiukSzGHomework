@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Container, Typography} from "@mui/material";
-import ImageCard from "../components/ImageCard";
+import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 
 //db indítás

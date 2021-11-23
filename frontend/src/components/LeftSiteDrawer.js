@@ -26,8 +26,8 @@ const menuItems = [
         path: '/upload'
     },
     {
-        text: 'Profiles',
-        path: '/profiles'
+        text: 'Users',
+        path: '/users'
     },
 ];
 

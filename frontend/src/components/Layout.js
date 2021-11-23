@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => {
             display: 'flex'
         },
         page: {
-            background: '#f9f9f9',
             width: '100%',
             padding: theme.spacing(3)
         },
