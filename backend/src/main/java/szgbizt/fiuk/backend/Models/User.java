@@ -5,9 +5,8 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private long id;
+    @GeneratedValue
+    private Long id;
 
     private String email;
 
@@ -16,11 +15,11 @@ public class User {
 
     private boolean admin;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

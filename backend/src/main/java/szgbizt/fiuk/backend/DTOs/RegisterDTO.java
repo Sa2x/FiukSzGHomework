@@ -12,4 +12,15 @@ public class RegisterDTO {
 
     String confirmedPassword;
 
+    public String getConfirmedPassword() {
+        return confirmedPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
