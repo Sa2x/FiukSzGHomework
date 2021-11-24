@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, CardContent, CardHeader, IconButton, Typography} from "@mui/material";
+import {Card, CardHeader, IconButton, Typography} from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import {makeStyles} from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";

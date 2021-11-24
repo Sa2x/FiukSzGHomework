@@ -50,7 +50,7 @@ export default function ImageCard({image, handleEdit, handleDelete}) {
                     }
                 />
                 <CardContent>
-                    <img src="logo192.png"/>
+                    <img src="logo192.png" alt="Logo" />
                 </CardContent>
             </Card>
         </div>

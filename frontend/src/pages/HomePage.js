@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Container, Typography} from "@mui/material";
+import {Container} from "@mui/material";
 import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
-import * as path from "path";
 
 //db indítás
 //json-server --watch data/db.json --port 8000

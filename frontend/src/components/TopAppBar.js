@@ -2,13 +2,8 @@ import React from "react";
 import {AppBar, Avatar, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => {
     return {
-    appbar: {
-        width: 'calc(100% - ${drawerWidth}px)'
-    },
     avatar: {
         marginLeft: theme.spacing(2)
     },
@@ -22,7 +17,6 @@ export default function TopAppBar() {
 
     return (
         <AppBar
-            className={classes.appbar}
             position="fixed"
             elevation={0}
         >
