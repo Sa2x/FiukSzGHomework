@@ -15,7 +15,7 @@ const useStyle = makeStyles(() => ({
     },
 }));
 
-export default function ImageCard({image, handleEdit, handleDelete}) {
+export default function ImageCard({image, handleComment, handleEdit, handleDelete}) {
     const classes = useStyle();
 
     return (
@@ -37,7 +37,7 @@ export default function ImageCard({image, handleEdit, handleDelete}) {
                     }
                     action={
                         <div>
-                            <IconButton>
+                            <IconButton onClick={() => handleComment(image.id)}>
                                 <AddCommentIcon/>
                             </IconButton>
                             <IconButton onClick={() => handleEdit(image.id)}>

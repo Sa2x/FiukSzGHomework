@@ -23,14 +23,24 @@ export default function HomePage() {
         700: 1,
     }
 
+    const handleComment = (id) => {
+        history.push({
+            pathname: '/comment',
+            search: '?query=abc',
+            state: {
+                id: id
+            }
+        })
+    }
+
     const handleEdit = (id) => {
         history.push({
             pathname: '/edit',
             search: '?query=abc',
             state: {
                 id: id
-            }}
-        )
+            }
+        })
     }
 
     const handleDelete = async (id) => {
@@ -51,7 +61,11 @@ export default function HomePage() {
             >
                 {images.map(image => (
                     <div key={image.id}>
-                        <ImageCard image={image} handleEdit={handleEdit} handleDelete={handleDelete} />
+                        <ImageCard
+                            image={image}
+                            handleComment={handleComment}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete} />
                     </div>
                 ))}
             </Masonry>

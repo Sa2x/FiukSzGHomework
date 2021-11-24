@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => {
             fontFamily: 'Quicksand',
             textDecoration: "none",
             marginRight: '10px',
-            fontSize: '24px',
+            fontSize: '20px',
             color: "black"
         }
 }});
