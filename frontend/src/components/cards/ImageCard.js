@@ -1,4 +1,4 @@
-import {Avatar, Card, CardContent, CardHeader, IconButton, Typography} from "@mui/material";
+import {Card, CardContent, CardHeader, IconButton, Typography} from "@mui/material";
 import React from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,7 +15,7 @@ const useStyle = makeStyles(() => ({
     },
 }));
 
-export default function ImageCard({image, handleDelete}) {
+export default function ImageCard({image, handleEdit, handleDelete}) {
     const classes = useStyle();
 
     return (
@@ -40,7 +40,7 @@ export default function ImageCard({image, handleDelete}) {
                             <IconButton>
                                 <AddCommentIcon/>
                             </IconButton>
-                            <IconButton>
+                            <IconButton onClick={() => handleEdit(image.id)}>
                                 <EditIcon/>
                             </IconButton>
                             <IconButton onClick={() => handleDelete(image.id)}>
