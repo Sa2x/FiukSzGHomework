@@ -6,6 +6,8 @@ import {amber} from "@mui/material/colors";
 import UploadPage from "./pages/UploadPage";
 import UsersPage from "./pages/UsersPage";
 import EditPage from "./pages/EditPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 const theme = createTheme({
     palette: {
@@ -37,6 +39,12 @@ export default function App() {
                         </Route>
                         <Route exact path="/edit">
                             <EditPage />
+                        </Route>
+                        <Route exact path="/login">
+                            <LoginPage />
+                        </Route>
+                        <Route exact path="/register">
+                            <RegisterPage />
                         </Route>
                     </Switch>
                 </Layout>

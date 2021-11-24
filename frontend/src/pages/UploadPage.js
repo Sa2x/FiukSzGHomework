@@ -6,7 +6,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory} from 'react-router-dom'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     field: {
         marginTop: '20px',
         marginBottom: '20px',
