@@ -13,7 +13,7 @@ const useStyle = makeStyles(() => ({
     },
 }));
 
-export default function UserCard() {
+export default function UserCard({handleEdit, handleDelete}) {
     const classes = useStyle()
 
     return (
@@ -29,9 +29,9 @@ export default function UserCard() {
                     action={
                         <div>
                             <IconButton>
-                                <EditIcon/>
+                                <EditIcon onClick={() => handleEdit(/*user.id*/ 1)}/>
                             </IconButton>
-                            <IconButton /*onClick={() => handleDelete(user.id)} */>
+                            <IconButton onClick={() => handleDelete(/*user.id*/ 1)} >
                                 <DeleteIcon/>
                             </IconButton>
                         </div>

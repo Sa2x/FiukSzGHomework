@@ -1,9 +1,9 @@
 import React from "react";
-import {AppBar, Avatar, Toolbar, Typography} from "@mui/material";
+import {AppBar, Toolbar, Typography} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Link} from "react-router-dom";
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
     return {
         title: {
             flexGrow: 1,

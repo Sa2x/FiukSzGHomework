@@ -9,6 +9,7 @@ import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import CommentPage from "./pages/CommentPage";
+import UserEditPage from "./pages/UserEditPage";
 
 const theme = createTheme({
     palette: {
@@ -37,6 +38,9 @@ export default function App() {
                         </Route>
                         <Route exact path="/users">
                             <UsersPage />
+                        </Route>
+                        <Route exact path="/user_edit">
+                            <UserEditPage />
                         </Route>
                         <Route exact path="/edit">
                             <EditPage />
