@@ -3,6 +3,11 @@ import React from "react";
 // import Masonry from "react-masonry-css";
 import UserCard from "../components/cards/UserCard";
 import {useHistory} from "react-router-dom";
+// import axios from "axios";
+//
+// const api = axios.create({
+//     baseURL: `http://localhost:8000/api/users/`
+// })
 
 export default function UsersPage() {
     const history = useHistory()
@@ -13,6 +18,19 @@ export default function UsersPage() {
     //     1100: 2,
     //     700: 1,
     // }
+
+    // getUsers = async () => {
+//     try {
+//         let data = await api.get('/').then(({ data }) => data)
+//         setUsers({users: data})
+//     } catch(err) {
+//         console.log(err)
+//     }
+// }
+
+    // deleteUser = async (id) => {
+//     let data = await api.delete(`/del/${id}`)
+// }
 
     const handleEdit = (id) => {
         history.push({

@@ -1,7 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {Container, Typography} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import {makeStyles} from "@mui/styles";
+import axios from "axios";
+
+// const api = axios.create({
+//     baseURL: `http://localhost:8000/api/images/`
+// })
 
 const useStyle = makeStyles(() => ({
     container: {
@@ -17,6 +22,26 @@ const useStyle = makeStyles(() => ({
 export default function CommentPage() {
     const classes = useStyle()
     const location = useLocation()
+
+   //  const image = useState()
+   //
+   // const getImage = async (image_id) => {
+   //      try {
+   //          let data = await api.get(`/${image_id}`).then(({ data }) => data)
+   //          this.setImage({image: data})
+   //      } catch(err) {
+   //          console.log(err => console.log(err))
+   //      }
+   //  }
+   //
+   //  const addComment = async () => {
+   //      let rest = await api.post(`/${image.id}/comments/new`)
+   //          .catch(err => console.log(err))
+   //  }
+   //
+   //  const deleteComment = async (comment_id) => {
+   //      let data = await api.delete(`/${image.id}/comments/del/${comment_id}`)
+   //  }
 
     return(
         <Container classes={classes.container}>

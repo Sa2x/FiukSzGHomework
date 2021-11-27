@@ -3,6 +3,11 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
+// import axios from "axios";
+//
+// const api = axios.create({
+//     baseURL: `http://localhost:8000/api/users/`
+// })
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -28,6 +33,10 @@ export default function RegisterPage() {
     const [passwordError, setPasswordError] = useState(false)
     const [passwordConfirmError, setPasswordConfirmError] = useState(false)
 
+    // const register = async () => {
+    //      let res = await api.post('/register', { title: "TEST"})
+    //          .catch(err => console.log(err))
+    //  }
 
     const handleSubmit = (event) => {
         event.preventDefault()

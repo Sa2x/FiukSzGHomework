@@ -5,6 +5,11 @@ import {Container} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from 'react-router-dom'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import axios from "axios";
+
+const api = axios.create({
+    baseURL: `http://localhost:8000/api/images/`
+})
 
 const useStyles = makeStyles(() => ({
     field: {
@@ -27,6 +32,11 @@ export default function UploadPage() {
     const created_at = "2021.11.22. 20:00"
     const comments = ""
 
+
+    // const uploadImage = async () => {
+//     let res = await api.post('/new', { title: "TEST"})
+//         .catch(err => console.log(err))
+// }
 
     const handleSubmit = (event) => {
         event.preventDefault()

@@ -3,7 +3,7 @@ import {Container} from "@mui/material";
 import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 //db indítás
 //json-server --watch data/db.json --port 8000
@@ -53,6 +53,20 @@ export default function HomePage() {
         1100: 2,
         700: 1,
     }
+
+    // getImages = async () => {
+//     try {
+//         let data = await api.get('/').then(({ data }) => data)
+//         setImages({images: data})
+//     } catch(err) {
+//         console.log(err)
+//     }
+// }
+
+    // deleteImage = async (id) => {
+//     let data = await api.delete(`/${id}`)
+//     getImages()
+// }
 
     const handleComment = (id) => {
         history.push({

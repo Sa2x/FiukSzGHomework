@@ -3,6 +3,11 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
+import axios from "axios";
+
+const api = axios.create({
+    baseURL: `http://localhost:8000/api/images/`
+})
 
 const useStyles = makeStyles(() => ({
     field: {
@@ -23,6 +28,21 @@ export default function EditPage() {
     //         .then(respone => respone.json())
     //         .then(data => setImage(data))
     // })
+
+    // const getImage = async (image_id) => {
+    //      try {
+    //          let data = await api.get(`/${image_id}`).then(({ data }) => data)
+    //          this.setImage({image: data})
+    //      } catch(err) {
+    //          console.log(err => console.log(err))
+    //      }
+    //  }
+
+    // const uploadImage = async () => {
+//     let res = await api.post(`/edit/${image_id}`, { title: "TEST"})
+//         .catch(err => console.log(err))
+// }
+
 
     const handleSubmit = (event) => {
 
