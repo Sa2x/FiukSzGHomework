@@ -3,9 +3,40 @@ import {Container} from "@mui/material";
 import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
+import axios from "axios";
 
 //db indítás
 //json-server --watch data/db.json --port 8000
+
+// axois examples
+//
+// const api = axios.create({
+//     baseURL: `http://localhost:8000/api/images/`
+// })
+//
+// getImages = async () => {
+//     try {
+//         let data = await api.get('/').then(({ data }) => data)
+//         setImages({images: data})
+//     } catch(err) {
+//         console.log(err)
+//     }
+// }
+//
+// uploadImage = async () => {
+//     let res = await api.post('/', { title: "TEST"})
+//         .catch(err => console.log(err))
+//     getImages()
+// }
+//
+// deleteImage = async (id) => {
+//     let data = await api.delete(`/${id}`)
+//     getImages()
+// }
+//
+// updateImage = async (id, val) => {
+//     let data = await api.patch(`/${id}`, { title: val})
+// }
 
 export default function HomePage() {
     const [images, setImages] = useState([])
