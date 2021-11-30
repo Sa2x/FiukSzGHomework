@@ -1,0 +1,3 @@
+/home/sasa/data1/projects/FiukSzGHomework/caffparser/CMakeFiles/rebuild_cache.dir
+/home/sasa/data1/projects/FiukSzGHomework/caffparser/CMakeFiles/edit_cache.dir
+/home/sasa/data1/projects/FiukSzGHomework/caffparser/CMakeFiles/caffparser.dir
