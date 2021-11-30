@@ -46,7 +46,7 @@ public:
         std::cout<<"Creation day:"<<creditDay<<'\n';
         std::cout<<"Creation hour:"<<creditHour<<'\n';
         std::cout<<"Creation minute:"<<creditMinute<<'\n';
-        std::cout<<"There are "<<numberOfAnim<<" animations in this caff"<<'\n';
+        std::cout<<"There are animations in this caff:"<<numberOfAnim<<'\n';
         for(Ciff ciff: ciffs){
             ciff.printData();
         }
