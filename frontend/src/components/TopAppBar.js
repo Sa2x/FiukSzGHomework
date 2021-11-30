@@ -7,7 +7,7 @@ const useStyles = makeStyles(() => {
     return {
         title: {
             flexGrow: 1,
-            marginLeft: '100px'
+            paddingLeft: '100px'
         },
         link: {
             fontFamily: 'Quicksand',

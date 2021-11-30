@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Container, Typography} from "@mui/material";
+import {Button, Container, TextField, Typography} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import {makeStyles} from "@mui/styles";
 import axios from "axios";
+import Masonry from "react-masonry-css";
+import CommentCard from "../components/cards/CommentCard";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 // REST
 // const api = axios.create({
@@ -16,18 +19,34 @@ const useStyle = makeStyles(() => ({
         display: 'block'
     },
     subfield: {
-        marginLeft: '20px',
+        paddingLeft: '20px',
         display: 'block'
     },
     row: {
         display: "flex",
         alignItems: "center",
+    },
+    commentTitle: {
+        flexGrow: 1
+    },
+    form: {
+        display: "flex",
+        width: "100vh"
     }
 }));
 
 export default function CommentPage() {
     const classes = useStyle()
     const location = useLocation()
+
+    const [commentMessage, setCommentMessage] = useState('')
+    const [commentMessageError, setCommentMessageError] = useState(false)
+
+    const breakpoints = {
+        default: 3,
+        1100: 2,
+        700: 1,
+    }
 
     // REST
    // const image = useState()
@@ -53,6 +72,14 @@ export default function CommentPage() {
    //  const deleteComment = async (comment_id) => {
    //      let data = await api.delete(`/${image.id}/comments/del/${comment_id}`)
    //  }
+
+    const handleSubmit = (event) => {
+
+    }
+
+    const handleDelete = async (comment_id) =>{
+
+    }
 
     return(
         <Container >
@@ -158,11 +185,50 @@ export default function CommentPage() {
                     component="h2"
                     color="primary"
                     gutterBottom
-                    className={classes.field}
+                    className={classes.commentTitle}
                 >
                     Comments
                 </Typography>
+
+                <form
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit}
+                    className={classes.form}
+                >
+                    <TextField
+                        onChange={(event) => setCommentMessage(event.target.value)}
+                        label="Comment Message"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        error={setCommentMessageError}
+                    />
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        endIcon={<KeyboardArrowRightIcon/>}
+                    >
+                        Submit
+                    </Button>
+                </form>
             </div>
+             <Container>
+                {/* <Masonry*/}
+                {/*    breakpointCols={breakpoints}*/}
+                {/*    className="my-masonry-grid"*/}
+                {/*    columnClassName="my-masonry-grid_column" >*/}
+                {/*    {comments.map(comment => (*/}
+                {/*        <div key={comment.id}>*/}
+                {/*            <CommentCard comment={comment}/>*/}
+                {/*        </div>*/}
+                {/*        ))}*/}
+                {/*</Masonry>*/}
+
+                 <CommentCard handleDelete={handleDelete}/>
+
+            </Container>
 
         </Container>
     )
