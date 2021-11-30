@@ -3,7 +3,7 @@ import {Container} from "@mui/material";
 import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 
 //db indítás
 //json-server --watch data/db.json --port 8000
@@ -38,6 +38,11 @@ import {useHistory} from "react-router-dom";
 //     let data = await api.patch(`/${id}`, { title: val})
 // }
 
+// REST
+// const api = axios.create({
+//     baseURL: `http://localhost:8000/api/images/`
+// })
+
 export default function HomePage() {
     const [images, setImages] = useState([])
     const history = useHistory()
@@ -54,19 +59,19 @@ export default function HomePage() {
         700: 1,
     }
 
-    // getImages = async () => {
-//     try {
-//         let data = await api.get('/').then(({ data }) => data)
-//         setImages({images: data})
-//     } catch(err) {
-//         console.log(err)
-//     }
-// }
-
-    // deleteImage = async (id) => {
-//     let data = await api.delete(`/${id}`)
-//     getImages()
-// }
+    // REST
+    // useEffect(() => {
+    //     getImages()
+    // })
+    //
+    // const getImages = async () => {
+    //     try {
+    //         let data = await api.get('/').then(({ data }) => data)
+    //         setImages(data)
+    //     } catch(err) {
+    //         console.log(err)
+    //     }
+    // }
 
     const handleComment = (id) => {
         history.push({
@@ -88,13 +93,17 @@ export default function HomePage() {
         })
     }
 
-    const handleDelete = async (id) => {
-        await fetch('http://localhost:8000/images/' + id, {
+    const handleDelete = async (image_id) => {
+        await fetch('http://localhost:8000/images/' + image_id, {
             method: 'DELETE'
         })
 
-        const newImages = images.filter(image => image.id !== id)
+        const newImages = images.filter(image => image.id !== image_id)
         setImages(newImages)
+
+        //REST
+        // let data = await api.delete(`/del/${image_id}`)
+        // getImages()
     }
 
     return (
