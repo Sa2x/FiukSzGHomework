@@ -50,13 +50,14 @@ public class WebShopController {
     }
 
     @GetMapping(value ="/{id}/preview")
-    public ResponseEntity<byte[]> getImagePreview(@PathVariable long id){
+    public ResponseEntity<byte[]> getImagePreview(@PathVariable long id,@Auth User user){
         try{
             Optional<Image> image = imageRepository.findById(id);
             if(image.isPresent()){
-                byte[] imageBytes = image.get().getCiffList().get(0).getImg(); //TODO: Melyik CIFF-et adjuk vissza?
+                byte[] imageBytes = image.get().getCiffList().get(0).getImg();
+                String header = "attachment; filename=" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=picture") //TODO
+                        .header(HttpHeaders.CONTENT_DISPOSITION, header) //TODO
                         .body(imageBytes);
             }
         }catch (NoSuchElementException e){
@@ -68,8 +69,6 @@ public class WebShopController {
     @Transactional
     @PostMapping(value = "/new",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Image> createImage(@ModelAttribute CaffDTO caff, @Auth User user){
-        //TODO: Megbeszélni, milyen lesz a küldött JSON formátuma, kell-e DTO
-        //Ha máshogy érkezik az adat akkor a transzformáció megoldása!!
         String output = "";
         try {
             File file = new File("file.caff");
@@ -170,14 +169,19 @@ public class WebShopController {
 
 
     @DeleteMapping(value="/del/{id}")
-    public ResponseEntity<Any> deleteImage(@PathVariable long id,@Auth User user){
+    public ResponseEntity<String> deleteImage(@PathVariable long id,@Auth User user){
+        if(!user.isAdmin()){
+            return new ResponseEntity("Only an admin can delete images!",HttpStatus.BAD_REQUEST);
+        }
         imageRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/edit/{id}",consumes = "application/json")
     public ResponseEntity<Image> editImage(@PathVariable long id,@RequestBody Image image, @Auth User user){
-        //TODO: Megoldani, hogy itt a JSON nem minden mezője lesz kitöltve.
+        if(!user.isAdmin()){
+            return new ResponseEntity("Only an admin can edit images!",HttpStatus.BAD_REQUEST);
+        }
         if(Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())){
             imageRepository.findById(id).ifPresent(foundImage -> imageRepository.save(image));
             return ResponseEntity.ok(imageRepository.findById(id).get());

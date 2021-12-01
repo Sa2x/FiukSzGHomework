@@ -56,13 +56,6 @@ public class UserController {
         return new ResponseEntity("Wrong email!",HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/logout",consumes = "application/json")
-    public ResponseEntity<Any> logoutUser(@RequestBody User user){
-        //TODO: OAUTH2-től függően máshogy kell implementálni
-        return null;
-    }
-
-
     //MUKSZIK
     @PostMapping(value = "/register",consumes = "application/json")
     public ResponseEntity<Any> userRegister(@RequestBody RegisterDTO registerDTO){
@@ -118,12 +111,4 @@ public class UserController {
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
-
-
-
-
-
-
-
-
 }
