@@ -1,1 +1,1 @@
-/usr/bin/c++     CMakeFiles/caffparser.dir/main.cpp.o CMakeFiles/caffparser.dir/CaffParser.cpp.o CMakeFiles/caffparser.dir/Caff.cpp.o CMakeFiles/caffparser.dir/Ciff.cpp.o  -o caffparser 
+/usr/bin/c++ -g CMakeFiles/caffparser.dir/main.cpp.o CMakeFiles/caffparser.dir/CaffParser.cpp.o CMakeFiles/caffparser.dir/Caff.cpp.o CMakeFiles/caffparser.dir/Ciff.cpp.o -o caffparser 
