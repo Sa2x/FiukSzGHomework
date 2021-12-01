@@ -38,20 +38,19 @@ import axios from "axios";
 //     let data = await api.patch(`/${id}`, { title: val})
 // }
 
-// REST
-// const api = axios.create({
-//     baseURL: `http://localhost:8000/api/images/`
-// })
+const api = axios.create({
+    baseURL: `http://localhost:8080/api/images/`
+})
 
 export default function HomePage() {
     const [images, setImages] = useState([])
     const history = useHistory()
 
-    useEffect(() => {
-        fetch('http://localhost:8000/images')
-            .then(respone => respone.json())
-            .then(data => setImages(data))
-    }, [])
+    // useEffect(() => {
+    //     fetch('http://localhost:8000/images')
+    //         .then(respone => respone.json())
+    //         .then(data => setImages(data))
+    // }, [])
 
     const breakpoints = {
         default: 3,
@@ -59,19 +58,20 @@ export default function HomePage() {
         700: 1,
     }
 
-    // REST
-    // useEffect(() => {
-    //     getImages()
-    // })
-    //
-    // const getImages = async () => {
-    //     try {
-    //         let data = await api.get('/').then(({ data }) => data)
-    //         setImages(data)
-    //     } catch(err) {
-    //         console.log(err)
-    //     }
-    // }
+    useEffect(() => {
+        getImages()
+    })
+
+    const getImages = async () => {
+        try {
+            await api.get('/').then(res => {
+                const data = res.data
+                setImages(data)
+            })
+        } catch(err) {
+            console.log(err)
+        }
+    }
 
     const handleComment = (id) => {
         history.push({
@@ -94,16 +94,9 @@ export default function HomePage() {
     }
 
     const handleDelete = async (image_id) => {
-        await fetch('http://localhost:8000/images/' + image_id, {
-            method: 'DELETE'
-        })
-
-        const newImages = images.filter(image => image.id !== image_id)
-        setImages(newImages)
-
-        //REST
-        // let data = await api.delete(`/del/${image_id}`)
-        // getImages()
+       await api.delete(`/del/${image_id}`).then(() => {
+           getImages()
+       })
     }
 
     return (

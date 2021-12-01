@@ -8,7 +8,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: `http://localhost:8000/api/images/`
+    baseURL: `http://localhost:8080/api/images/`
 })
 
 const useStyles = makeStyles(() => ({
@@ -23,35 +23,30 @@ export default function UploadPage() {
     const classes = useStyles()
     const history = useHistory()
 
-    const [title, setTitle] = useState('')
-    const [titleError, setTitleError] = useState(false)
+    const [image, setImage] = useState(null)
+    const [imageError, setImageError] = useState(false)
 
-    const caff_file = useState('asd')
-    const uploaded_by = useState("Beni a bátor")
-    const created_by = "Sándor a királyunk"
-    const created_at = "2021.11.22. 20:00"
-    const comments = ""
+    const uploadImage = async () => {
+        const image = {
+            file: this.image
+        }
 
-
-    // const uploadImage = async () => {
-//     let res = await api.post('/new', { title: "TEST"})
-//         .catch(err => console.log(err))
-// }
+        await api.post('/new', { image })
+            .catch(err => console.log(err))
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        setTitleError(false)
+        setImageError(false)
 
-        if (title === '') {
-            setTitleError(true)
+        if(image === null) {
+            setImageError(true)
         }
 
-        if(title) {
-            fetch('http://localhost:8000/images', {
-                method: 'POST',
-                headers: {"Content-type": "application/json"},
-                body: JSON.stringify({title, caff_file, uploaded_by, created_by, created_at, comments})
-            }).then(() => history.push('/'))
+        if(image) {
+            uploadImage().then(() => {
+                history.push('/')
+            })
         }
     }
 
@@ -71,17 +66,13 @@ export default function UploadPage() {
                 autoComplete="off"
                 onSubmit={handleSubmit}
             >
-                <TextField
-                    className={classes.field}
-                    onChange={(event) => setTitle(event.target.value)}
-                    label="Image name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    error={titleError}
-                />
                 <div className={classes.field} >
-                    <input type="file" />
+                    <input
+                        type="file"
+                        value={image}
+                        onChange={(e) => setImage(e.target.files[0])}
+                        error
+                    />
                 </div>
 
                 <Button
