@@ -48,6 +48,10 @@ export default function EditPage() {
 
     }
 
+    const handleDelete = async (comment_id) => {
+
+    }
+
     return (
         <Container>
             <Typography

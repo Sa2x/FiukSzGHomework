@@ -49,8 +49,10 @@ export default function UsersPage() {
     }
 
     const handleDelete = async (id) => {
-        await api.delete(`/del/${id}`)
-        getUsers()
+        await api.delete(`/del/${id}`).then(() => {
+                getUsers()
+            }
+        )
     }
 
     return (

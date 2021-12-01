@@ -7,10 +7,9 @@ import Masonry from "react-masonry-css";
 import CommentCard from "../components/cards/CommentCard";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-// REST
-// const api = axios.create({
-//     baseURL: `http://localhost:8000/api/images/`
-// })
+const api = axios.create({
+    baseURL: `http://localhost:8080/api/images/`
+})
 
 const useStyle = makeStyles(() => ({
     field: {
@@ -39,6 +38,12 @@ export default function CommentPage() {
     const classes = useStyle()
     const location = useLocation()
 
+    const image_id = location.state.id
+
+    const [image, setImage] = useState([])
+    const [preview, setPreview] = useState([])
+
+
     const [commentMessage, setCommentMessage] = useState('')
     const [commentMessageError, setCommentMessageError] = useState(false)
 
@@ -48,48 +53,73 @@ export default function CommentPage() {
         700: 1,
     }
 
-    // REST
-   // const image = useState()
-   //
-   //  useEffect(() => {
-   //      getImage(location.state.id)
-   //  })
-   //
-   // const getImage = async (image_id) => {
-   //      try {
-   //          let data = await api.get(`/${image_id}`).then(({ data }) => data)
-   //          this.setImage({image: data})
-   //      } catch(err) {
-   //          console.log(err => console.log(err))
-   //      }
-   //  }
-   //
-   //  const addComment = async () => {
-   //      let rest = await api.post(`/${image.id}/comments/new`, { title: "TEST"})
-   //          .catch(err => console.log(err))
-   //  }
-   //
-   //  const deleteComment = async (comment_id) => {
-   //      let data = await api.delete(`/${image.id}/comments/del/${comment_id}`)
-   //  }
+    useEffect(() => {
+        getImage()
+        getPreview()
+    })
+
+    const getImage = async () => {
+        try {
+            await api.get(`/${image_id}`).then(res => {
+                setImage(res.data)
+            })
+        } catch (err) {
+            console.log(err => console.log(err))
+        }
+    }
+
+    const getPreview = async () => {
+        try {
+            await api.get(`/${image_id}/preview`).then(res => {
+                setPreview(res.data)
+            })
+        } catch (err) {
+            console.log(err => console.log(err))
+        }
+    }
+
+     const addComment = async () => {
+        const message = {
+            comment: commentMessage
+            //TODO kiegészíetni
+        }
+
+        await api.post(`/${image.id}/comments/new`, { message })
+             .catch(err => console.log(err))
+     }
 
     const handleSubmit = (event) => {
+        event.preventDefault()
+        setCommentMessageError(false)
 
+        if(commentMessage === '' ) {
+            setCommentMessageError(true)
+        }
+
+        if(commentMessage) {
+            addComment()
+        }
     }
 
-    const handleDelete = async (comment_id) =>{
-
+    const handleDelete = async (comment_id) => {
+        try {
+            await api.delete(`/${image.id}/comments/del/${comment_id}`).then(() => {
+                getImage()
+            })
+        } catch (err) {
+            console.log(err => console.log(err))
+        }
     }
 
-    return(
-        <Container >
+    return (
+        <Container>
             <Typography
                 variant="h5"
                 component="h2"
                 color="primary"
                 gutterBottom
             >
-                Image Details and Comment | Image id:  {location.state.id}
+                Image Details and Comment | Image id: {location.state.id}
             </Typography>
 
             <div className={classes.row}>
@@ -109,12 +139,12 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    A csendélet felemelkedése
+                    {image[0].name}
                 </Typography>
             </div>
 
-
-            <img src="logo192.png" alt="Logo" />
+            //TODO kép megjelenítés
+            <img src={preview} alt="Logo"/>
 
             <div className={classes.row}>
                 <Typography
@@ -133,7 +163,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    Geribruuuuuuuuu
+                    {image[0].uploadedBy}
                 </Typography>
             </div>
 
@@ -154,7 +184,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    Sasasasasasasasasa
+                    {image[0].createdBy}
                 </Typography>
             </div>
 
@@ -175,7 +205,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    3010.420.69.
+                    {image[0].createdAt}
                 </Typography>
             </div>
 
@@ -202,7 +232,7 @@ export default function CommentPage() {
                         variant="outlined"
                         fullWidth
                         required
-                        error={setCommentMessageError}
+                        error={commentMessageError}
                     />
                     <Button
                         variant="contained"
@@ -214,22 +244,19 @@ export default function CommentPage() {
                     </Button>
                 </form>
             </div>
-             <Container>
-                {/* <Masonry*/}
-                {/*    breakpointCols={breakpoints}*/}
-                {/*    className="my-masonry-grid"*/}
-                {/*    columnClassName="my-masonry-grid_column" >*/}
-                {/*    {comments.map(comment => (*/}
-                {/*        <div key={comment.id}>*/}
-                {/*            <CommentCard comment={comment}/>*/}
-                {/*        </div>*/}
-                {/*        ))}*/}
-                {/*</Masonry>*/}
 
-                 <CommentCard handleDelete={handleDelete}/>
-
+            <Container>
+                 <Masonry
+                    breakpointCols={breakpoints}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column" >
+                    {image[0].comments.map(comment => (
+                        <div key={comment.id}>
+                            <CommentCard comment={comment} handleDelete={handleDelete}/>
+                        </div>
+                        ))}
+                </Masonry>
             </Container>
-
         </Container>
     )
 }

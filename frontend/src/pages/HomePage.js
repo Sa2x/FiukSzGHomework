@@ -4,6 +4,7 @@ import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
+import AuthService from "../services/AuthService";
 
 //db indítás
 //json-server --watch data/db.json --port 8000
@@ -39,7 +40,10 @@ import axios from "axios";
 // }
 
 const api = axios.create({
-    baseURL: `http://localhost:8080/api/images/`
+    baseURL: `http://localhost:8080/api/images/`,
+    headers: {
+        Authorization: `Bearer ${AuthService.getCurrentUser()}`
+    }
 })
 
 export default function HomePage() {
