@@ -16,7 +16,7 @@ public class Comment {
     private String comment;
 
     @ManyToOne
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
+    @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private User createdBy;
 
     private Date createdAt;

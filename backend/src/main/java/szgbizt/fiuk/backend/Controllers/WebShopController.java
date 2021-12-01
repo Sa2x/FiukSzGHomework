@@ -218,7 +218,9 @@ public class WebShopController {
 
     @DeleteMapping(value = "/{imageId}/comments/del/{commentId}")
     public ResponseEntity<Any> deleteComment(@PathVariable long imageId, @PathVariable long commentId,@Auth User user){
-        //TODO
+        if(!user.isAdmin()){
+            return new ResponseEntity("You are not an admin!",HttpStatus.BAD_REQUEST);
+        }
         Optional<Image> image = imageRepository.findById(imageId);
         if(image.isPresent()){
             image.get().getComments().removeIf(comment -> comment.getId() == commentId);
