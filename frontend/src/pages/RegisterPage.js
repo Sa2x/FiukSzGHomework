@@ -3,11 +3,12 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
-// import axios from "axios";
-//
-// const api = axios.create({
-//     baseURL: `http://localhost:8000/api/users/`
-// })
+import axios from "axios";
+import AuthService from "../services/AuthService";
+
+const api = axios.create({
+    baseURL: `http://localhost:8080/user/`
+})
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -27,21 +28,28 @@ export default function RegisterPage() {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordConfirm, setPasswordConfirm] = useState('')
+    const [confirmedPassword, setConfirmedPassword] = useState('')
 
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
-    const [passwordConfirmError, setPasswordConfirmError] = useState(false)
+    const [confirmedPasswordError, setConfirmedPasswordError] = useState(false)
 
-    // const register = async () => {
-    //      let res = await api.post('/register', { title: "TEST"})
-    //          .catch(err => console.log(err))
-    //  }
+    const register = async () => {
+        const user = {
+            email: this.email,
+            password: this.password,
+            confirmedPassword: this.confirmedPassword
+        }
+
+         await api.post('/register', { user })
+             .catch(err => console.log(err))
+     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         setEmailError(false)
         setPasswordError(false)
+        setConfirmedPasswordError(false)
 
         if (email === '') {
             setEmailError(true)
@@ -49,12 +57,18 @@ export default function RegisterPage() {
         if (password === '') {
             setPasswordError(true)
         }
-        if (passwordConfirm === '') {
-            setPasswordConfirmError(true)
+        if (confirmedPassword === '') {
+            setConfirmedPasswordError(true)
         }
 
-        if(email && password && passwordConfirmError) {
-            history.push('/')
+        if(email && password && confirmedPassword) {
+            AuthService.register(
+                this.email,
+                this.password,
+                this.confirmedPassword).then(() => {
+                    history.push('/')
+                }
+            )
         }
     }
 
@@ -96,12 +110,12 @@ export default function RegisterPage() {
 
                 <TextField
                     className={classes.field}
-                    onChange={(event) => setPasswordConfirm(event.target.value)}
+                    onChange={(event) => setConfirmedPassword(event.target.value)}
                     label="Password Confirm"
                     variant="outlined"
                     fullWidth
                     required
-                    error={passwordConfirmError}
+                    error={confirmedPasswordError}
                 />
 
                 <Button
