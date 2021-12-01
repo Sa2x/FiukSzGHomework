@@ -49,20 +49,12 @@ public class UserController {
                         .signWith(SignatureAlgorithm.HS512, "secret")
                         .compact();
                 return ResponseEntity.ok(new TokenDTO(jwt));
-
             }
         }else{
             return new ResponseEntity("Wrong password!",HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity("Wrong email!",HttpStatus.BAD_REQUEST);
     }
-
-    @PostMapping(value = "/logout",consumes = "application/json")
-    public ResponseEntity<Any> logoutUser(@RequestBody User user){
-        //TODO: OAUTH2-től függően máshogy kell implementálni
-        return null;
-    }
-
 
     //MUKSZIK
     @PostMapping(value = "/register",consumes = "application/json")
@@ -84,21 +76,30 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping(value = "/me")
+    public ResponseEntity<User> getUser(@Auth User user){
+        Optional<User> foundUser = userRepository.findUserByEmail(user.getEmail());
+        if(foundUser.isPresent()){
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     //MUKSZIK
     @GetMapping(value ="/")
-    public ResponseEntity<List<User>> getAllUser(){
+    public ResponseEntity<List<User>> getAllUser(@Auth User user){
         return ResponseEntity.ok(userRepository.findAll());
     }
 
     //MUKSZIK
     @PutMapping(value = "/edit/{id}",consumes = "application/json")
-    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody User user){
+    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody User editableUser, @Auth User user){
         //Egyszerűbb ha simán JSON-ban megadjuk az ID fieldet is, de most csinálom az eredeti módon
         if(!user.isAdmin()){
             return new ResponseEntity("You are not an admin!",HttpStatus.UNAUTHORIZED);
         }
-        user.setId(id);
-        userRepository.findById(id).ifPresent(foundUser -> userRepository.save(user));
+        editableUser.setId(id);
+        userRepository.findById(id).ifPresent(foundUser -> userRepository.save(editableUser));
         return ResponseEntity.ok(userRepository.findById(id).get());
     }
     //MUKSZIK
@@ -110,12 +111,4 @@ public class UserController {
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
-
-
-
-
-
-
-
-
 }

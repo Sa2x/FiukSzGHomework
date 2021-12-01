@@ -15,8 +15,10 @@ import szgbizt.fiuk.backend.Models.Comment;
 import szgbizt.fiuk.backend.Models.Image;
 import szgbizt.fiuk.backend.Models.User;
 import szgbizt.fiuk.backend.Repositories.ImageRepository;
+import szgbizt.fiuk.backend.Repositories.UserRepository;
 
 import javax.imageio.ImageIO;
+import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.Timestamp;
@@ -32,12 +34,17 @@ public class WebShopController {
     @Autowired
     ImageRepository imageRepository;
 
-    @GetMapping(value = "/",produces = "application/json")
+    @Autowired
+    UserRepository userRepository;
+
+    @Transactional
+    @GetMapping(value = "/")
     public ResponseEntity<List<Image>> getAllImages(@Auth User user){
         return ResponseEntity.ok(imageRepository.findAll());
     }
 
-    @GetMapping(value = "/{id}",produces = "application/json")
+    @Transactional
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Image> getImage(@PathVariable long id,@Auth User user){
         return ResponseEntity.ok(imageRepository.findById(id).get());
     }
@@ -47,21 +54,21 @@ public class WebShopController {
         try{
             Optional<Image> image = imageRepository.findById(id);
             if(image.isPresent()){
-                byte[] imageBytes = image.get().getCiffList().get(0).getImg(); //TODO: Melyik CIFF-et adjuk vissza?
+                byte[] imageBytes = image.get().getCiffList().get(0).getImg();
+                String header = "attachment; filename=" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\\TODO") //TODO
+                        .header(HttpHeaders.CONTENT_DISPOSITION, header) //TODO
                         .body(imageBytes);
             }
         }catch (NoSuchElementException e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
         return new ResponseEntity("Something went wrong in the preview!", HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/new",consumes = "application/json")
-    public ResponseEntity<Any> createImage(@RequestBody CaffDTO caff, @Auth User user){
-        //TODO: Megbeszélni, milyen lesz a küldött JSON formátuma, kell-e DTO
-        //Ha máshogy érkezik az adat akkor a transzformáció megoldása!!
+    @Transactional
+    @PostMapping(value = "/new",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Image> createImage(@ModelAttribute CaffDTO caff, @Auth User user){
         String output = "";
         try {
             File file = new File("file.caff");
@@ -106,39 +113,43 @@ public class WebShopController {
         }
         scanner.close();
 
+        Optional<User> foundUser = userRepository.findUserByEmail(user.getEmail());
+
         Image image = new Image();
         image.setCiffList(ciffs);
         image.setCreatedBy(creatorName);
-        image.setUploadedBy(user);
+        if(foundUser.isPresent()){
+            image.setUploadedBy(foundUser.get()); // EZ PROBLÉMÁS MERT SZAR
+        }
         image.setComments(null);
         LocalDateTime localDate = LocalDateTime.of(creationYear,creationMonth,creationDay,creationHour,creationMinute);
         image.setCreatedAt(Timestamp.valueOf(localDate));
-        imageRepository.save(image);
 
         //imageRepository.save(image);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(imageRepository.save(image));
     }
 
     private Ciff ciffParser(Scanner scanner){
-        int duration = Integer.parseInt(scanner.nextLine().split(":")[1]);
-        int width = Integer.parseInt(scanner.nextLine().split(":")[1]);
-        int height = Integer.parseInt(scanner.nextLine().split(":")[1]);
+        int duration = Integer.parseInt(scanner.nextLine().split(":")[1].trim());
+        //WIDTH ÉS HEIGHT DOLGOT NÉZD ÁT MÉG
+        int width = Integer.parseInt(scanner.nextLine().split(":")[1].trim());
+        int height = Integer.parseInt(scanner.nextLine().split(":")[1].trim());
 
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         String caption = scanner.nextLine().split(":")[1];
-        List<String> tags = List.of(scanner.nextLine().split(":")[1]);
-
+        List<String> tags = List.of(scanner.nextLine().split(":")[1].split(" "));
+        //TODO: Tageket tovább bontani, mert most egyben vannak eltárolva, hiányzik még egy split hívás, ahol a regex egy whitespace
         for(int rowCounter = 0; rowCounter < height; rowCounter++){
             String row = scanner.nextLine();
-            String[] pixels = row.split(",");
+            String[] pixels = row.split(";");
             for(int columnCounter = 0; columnCounter < width ; columnCounter++){
                 String[] pixel = pixels[columnCounter].split(",");
-                int r = Integer.parseInt(pixel[0]);
-                int g = Integer.parseInt(pixel[1]);
-                int b = Integer.parseInt(pixel[2]);
+                int r = Integer.parseInt(pixel[0].replace("(","")); // trim the ( from the beggining
+                int g = Integer.parseInt(pixel[1].trim());
+                int b = Integer.parseInt(pixel[2].replace(")",""));
                 int p = (r << 16) | (g << 8)| b;
-                img.setRGB(rowCounter,columnCounter,p);
+                img.setRGB(columnCounter,rowCounter,p);
             }
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -158,14 +169,19 @@ public class WebShopController {
 
 
     @DeleteMapping(value="/del/{id}")
-    public ResponseEntity<Any> deleteImage(@PathVariable long id,@Auth User user){
+    public ResponseEntity<String> deleteImage(@PathVariable long id,@Auth User user){
+        if(!user.isAdmin()){
+            return new ResponseEntity("Only an admin can delete images!",HttpStatus.BAD_REQUEST);
+        }
         imageRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/edit/{id}",consumes = "application/json")
     public ResponseEntity<Image> editImage(@PathVariable long id,@RequestBody Image image, @Auth User user){
-        //TODO: Megoldani, hogy itt a JSON nem minden mezője lesz kitöltve.
+        if(!user.isAdmin()){
+            return new ResponseEntity("Only an admin can edit images!",HttpStatus.BAD_REQUEST);
+        }
         if(Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())){
             imageRepository.findById(id).ifPresent(foundImage -> imageRepository.save(image));
             return ResponseEntity.ok(imageRepository.findById(id).get());
@@ -182,26 +198,37 @@ public class WebShopController {
         if(image.isPresent()){
             return new ResponseEntity(image.get().getComments(), HttpStatus.OK);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping(value = "/{imageId}/comments/new",consumes = "application/json")
-    public ResponseEntity<String> createComment(@PathVariable long imageId,@RequestBody Comment comment,@Auth User user){
+    public ResponseEntity<String> createComment(@PathVariable long imageId,@RequestBody String comment,@Auth User user){
         //TODO: Befejezni
         Optional<Image> image = imageRepository.findById(imageId);
+        Optional<User> foundUser = userRepository.findUserByEmail(user.getEmail());
         if(image.isPresent()){
-            image.get().getComments().add(comment);
+            Comment realComment = new Comment();
+            realComment.setComment(comment);
+            if(foundUser.isPresent()){
+                realComment.setCreatedBy(foundUser.get());
+            }
+            realComment.setCreatedAt(Calendar.getInstance().getTime());
+            image.get().getComments().add(realComment);
+            imageRepository.save(image.get());
             return ResponseEntity.ok("Successfully uploaded comment");
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping(value = "/{imageId}/comments/del/{commentId}")
     public ResponseEntity<Any> deleteComment(@PathVariable long imageId, @PathVariable long commentId,@Auth User user){
-        //TODO
+        if(!user.isAdmin()){
+            return new ResponseEntity("You are not an admin!",HttpStatus.BAD_REQUEST);
+        }
         Optional<Image> image = imageRepository.findById(imageId);
         if(image.isPresent()){
             image.get().getComments().removeIf(comment -> comment.getId() == commentId);
+            imageRepository.save(image.get());
         }
         return ResponseEntity.ok().build();
     }

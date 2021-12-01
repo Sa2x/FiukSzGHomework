@@ -1,6 +1,7 @@
 package szgbizt.fiuk.backend.Models;
 
 import jdk.jfr.Enabled;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.awt.image.BufferedImage;
@@ -8,16 +9,18 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
+@Proxy(lazy = false)
 public class Ciff  {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    @Lob
     private byte[] img;
     private String caption;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> tags;
 
     public Ciff() {

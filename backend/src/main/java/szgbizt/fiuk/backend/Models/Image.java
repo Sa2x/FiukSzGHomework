@@ -1,11 +1,17 @@
 package szgbizt.fiuk.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+//@JsonIgnoreProperties(value = {"ciffList"})
 public class Image {
     @Id
     @GeneratedValue
@@ -14,9 +20,12 @@ public class Image {
     private String name;
 
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Ciff> ciffList;
 
     @ManyToOne
+    @Cascade(value= org.hibernate.annotations.CascadeType.MERGE)
     private User uploadedBy;
 
     private String createdBy;
@@ -24,7 +33,9 @@ public class Image {
     private Date createdAt;
 
     @OneToMany
-    private List<Comment> comments;
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Comment> comments = Collections.emptyList();
 
     public Long getId() {
         return id;

@@ -29,18 +29,17 @@ public class AuthTokenHandler {
             throw new AuthException("JWT Token not found");
         }
         Claims claims = Jwts.parser().setSigningKey("secret").parseClaimsJws(token).getBody();
-        if(!userRepository.existsById((Integer) claims.get("user_id"))){
+        if(!userRepository.existsById(((Integer) claims.get("user_id")).longValue())){
             throw new AuthException("Authentication failed, JWT is not valid");
         }
         User user = new User();
-        user.setId((Long)claims.get("user_id"));
+        user.setId(((Integer) claims.get("user_id")).longValue());
         user.setEmail((String)claims.get("user_email"));
         user.setAdmin((boolean)claims.get("user_admin"));
         return user;
     }
 
     public AuthTokenHandler(@NotNull UserRepository userRepository) {
-        super();
         Intrinsics.checkNotNullParameter(userRepository, "userRepository");
         this.userRepository = userRepository;
     }
