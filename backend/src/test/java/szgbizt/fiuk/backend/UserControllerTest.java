@@ -1,11 +1,8 @@
 package szgbizt.fiuk.backend;
 
 import org.hibernate.mapping.Any;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -60,7 +57,7 @@ public class UserControllerTest {
 
         ResponseEntity<TokenDTO> tokenDTOResponseEntity = userController.userLogin(user2);
 
-        assertEquals(HttpStatus.BAD_REQUEST, tokenDTOResponseEntity.getStatusCode());
+        assertEquals(Objects.requireNonNull(tokenDTOResponseEntity.getBody()).getToken(), "Wrong Password!");
     }
 
     @Test
@@ -74,7 +71,7 @@ public class UserControllerTest {
 
         ResponseEntity<TokenDTO> tokenDTOResponseEntity = userController.userLogin(user2);
 
-        assertEquals(HttpStatus.BAD_REQUEST, tokenDTOResponseEntity.getStatusCode());
+        assertEquals(Objects.requireNonNull(tokenDTOResponseEntity.getBody()).getToken(), "Wrong email!");
     }
 
     @Test
@@ -124,7 +121,7 @@ public class UserControllerTest {
 
         ResponseEntity<User> userResponseEntity = userController.getUser(user);
 
-        assertEquals(userResponseEntity.getBody().getEmail(), user.getEmail());
+        assertEquals(Objects.requireNonNull(userResponseEntity.getBody()).getEmail(), user.getEmail());
     }
 
     @Test
