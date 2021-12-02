@@ -33,16 +33,6 @@ export default function LoginPage() {
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
 
-   const login = async () => {
-       const user = {
-           email: this.email,
-           password: this.password
-       }
-
-        await api.post('/login', { user })
-            .catch(err => console.log(err))
-    }
-
     const handleSubmit = (event) => {
         event.preventDefault()
         setEmailError(false)
@@ -56,11 +46,12 @@ export default function LoginPage() {
         }
 
         if(email && password) {
-            AuthService.login(this.email, this.password).then(() =>{
+            AuthService.login(email, password).then(() =>{
                     history.push('/')
                 }
             )
         }
+        //TODO handle wrong cumo
     }
 
     return (

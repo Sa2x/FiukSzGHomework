@@ -4,6 +4,8 @@ import Masonry from "react-masonry-css";
 import UserCard from "../components/cards/UserCard";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
+import AuthService from "../services/AuthService";
+import authHeader from "../services/AuthHeader";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/user/`
@@ -23,12 +25,11 @@ export default function UsersPage() {
         getUsers()
     })
 
-
     const getUsers = async () => {
         try {
             // let data = await api.get('/').then(({ data }) => data)
             // setUsers(data)
-            await api.get('/').then(res => {
+            await api.get('/', { headers: authHeader() }).then(res => {
                     const persons = res.data
                     setUsers(persons)
                 }
@@ -49,7 +50,7 @@ export default function UsersPage() {
     }
 
     const handleDelete = async (id) => {
-        await api.delete(`/del/${id}`).then(() => {
+        await api.delete(`/del/${id}`, { headers: authHeader() }).then(() => {
                 getUsers()
             }
         )

@@ -13,7 +13,7 @@ const useStyle = makeStyles(() => ({
     },
 }));
 
-export default function UserCard({handleEdit, handleDelete}) {
+export default function UserCard({user, handleEdit, handleDelete}) {
     const classes = useStyle()
 
     return (
@@ -23,15 +23,15 @@ export default function UserCard({handleEdit, handleDelete}) {
                     title={
                         <div className={classes.subheader}>
                             <PersonIcon/>
-                            <Typography>Sasasasa</Typography>
+                            <Typography>{user.email}</Typography>
                         </div>
                     }
                     action={
                         <div>
                             <IconButton>
-                                <EditIcon onClick={() => handleEdit(/*user.id*/ 1)}/>
+                                <EditIcon onClick={() => handleEdit(user.id)}/>
                             </IconButton>
-                            <IconButton onClick={() => handleDelete(/*user.id*/ 1)} >
+                            <IconButton onClick={() => handleDelete(user.id)} >
                                 <DeleteIcon/>
                             </IconButton>
                         </div>

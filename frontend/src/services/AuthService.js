@@ -1,18 +1,19 @@
 import axios from "axios"
+import authHeader from "./AuthHeader";
 
 const API_URL = "http://localhost:8080/user/"
 
 class AuthService {
     login(email, password) {
         const user = {
-            email: email,
-            password: password
+            email,
+            password
         }
 
         return axios
-            .post(API_URL + "login", { user })
+            .post(API_URL + "login", user)
             .then(response => {
-                if (response.data.accessToken) {
+                if (response.data.token) {
                     localStorage.setItem("user", JSON.stringify(response.data))
                 }
                 return response.data
@@ -25,12 +26,12 @@ class AuthService {
 
     register(email, password, confirmedPassword) {
         const user = {
-            email: email,
-            password: password,
-            confirmedPassword: confirmedPassword
+            email,
+            password,
+            confirmedPassword
         }
 
-        return axios.post(API_URL + "register", { user })
+        return axios.post(API_URL + "register", user)
     }
 
     getCurrentUser() {

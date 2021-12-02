@@ -6,7 +6,7 @@ import {makeStyles} from "@mui/styles";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: `http://localhost:8000/api/images/`
+    baseURL: `http://localhost:8080/api/images/`
 })
 
 const useStyles = makeStyles(() => ({
@@ -21,7 +21,10 @@ export default function EditPage() {
     const classes = useStyles()
     const location = useLocation()
 
+    const image_id = location.state.id
+
     const [image, setImage] = useState([])
+    const [preview, setPreview] = useState([])
 
     // useEffect(() => {
     //     fetch(`http://localhost:8000/images/${location.state.id}`)
@@ -43,6 +46,30 @@ export default function EditPage() {
 //         .catch(err => console.log(err))
 // }
 
+    useEffect(() => {
+        getImage()
+        getPreview()
+    })
+
+    const getImage = async () => {
+        try {
+            await api.get(`/${image_id}`).then(res => {
+                setImage(res.data)
+            })
+        } catch (err) {
+            console.log(err => console.log(err))
+        }
+    }
+
+    const getPreview = async () => {
+        try {
+            await api.get(`/${image_id}/preview`).then(res => {
+                setPreview(res.data)
+            })
+        } catch (err) {
+            console.log(err => console.log(err))
+        }
+    }
 
     const handleSubmit = (event) => {
 

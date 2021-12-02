@@ -3,12 +3,7 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
-import axios from "axios";
 import AuthService from "../services/AuthService";
-
-const api = axios.create({
-    baseURL: `http://localhost:8080/user/`
-})
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -34,17 +29,6 @@ export default function RegisterPage() {
     const [passwordError, setPasswordError] = useState(false)
     const [confirmedPasswordError, setConfirmedPasswordError] = useState(false)
 
-    const register = async () => {
-        const user = {
-            email: this.email,
-            password: this.password,
-            confirmedPassword: this.confirmedPassword
-        }
-
-         await api.post('/register', { user })
-             .catch(err => console.log(err))
-     }
-
     const handleSubmit = (event) => {
         event.preventDefault()
         setEmailError(false)
@@ -63,13 +47,16 @@ export default function RegisterPage() {
 
         if(email && password && confirmedPassword) {
             AuthService.register(
-                this.email,
-                this.password,
-                this.confirmedPassword).then(() => {
-                    history.push('/')
+                email,
+                password,
+                confirmedPassword
+            ).then(() => {
+                    history.push('/login')
                 }
             )
         }
+
+        //TODO handle wrong cumo
     }
 
     return (
@@ -80,7 +67,7 @@ export default function RegisterPage() {
                 color="primary"
                 gutterBottom
             >
-                Login
+                Register
             </Typography>
 
             <form
