@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Container} from "@mui/material";
+import {Container, Typography} from "@mui/material";
 import Masonry from "react-masonry-css";
 import UserCard from "../components/cards/UserCard";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import authHeader from "../services/AuthHeader";
+import AuthService from "../services/AuthService";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/user/`
@@ -13,6 +14,8 @@ const api = axios.create({
 export default function UsersPage() {
     const history = useHistory()
     const [users, setUsers] = useState([])
+
+    const currentUser = AuthService.getCurrentUser()
 
     const breakpoints = {
         default: 3,
@@ -54,7 +57,8 @@ export default function UsersPage() {
     }
 
     return (
-        <Container>
+    <Container>
+        { currentUser ? (
             <Masonry
                 breakpointCols={breakpoints}
                 className="my-masonry-grid"
@@ -62,10 +66,18 @@ export default function UsersPage() {
                 {users.map(user => (
                     <div key={user.id}>
                         <UserCard user={user} handleEdit={handleEdit}
-                              handleDelete={handleDelete}  />
+                                  handleDelete={handleDelete}  />
                     </div>
-                    ))}
+                ))}
             </Masonry>
-        </Container>
+        ) : (
+            <Typography
+                variant="h1"
+            >
+                You have to login
+            </Typography>
+        )
+        }
+    </Container>
     );
 }

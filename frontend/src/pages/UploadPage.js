@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from "axios";
 import authMultipartHeader from "../services/AuthMultipartHeader";
+import AuthService from "../services/AuthService";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`
@@ -23,6 +24,7 @@ const useStyles = makeStyles(() => ({
 export default function UploadPage() {
     const classes = useStyles()
     const history = useHistory()
+    const currentUser = AuthService.getCurrentUser()
 
     const [title, setTitle] = useState('')
     const [titleError, setTitleError] = useState(false)
@@ -56,8 +58,8 @@ export default function UploadPage() {
 
         if (title && image) {
             let formData = new FormData()
-            formData.append("file", `${image}`)
-            formData.append("name", `${title}`)
+            formData.append("file", image)
+            formData.append("name", title)
 
             // uploadImage().then(() => {
             //     history.push('/')
@@ -80,47 +82,58 @@ export default function UploadPage() {
     }
 
     return (
-        <Container>
-            <Typography
-                variant="h6"
-                component="h2"
-                color="primary"
-                gutterBottom
-            >
-                Upload Image
-            </Typography>
-
-            <form
-                noValidate
-                autoComplete="off"
-                onSubmit={handleSubmit}
-            >
-                <TextField
-                    className={classes.field}
-                    onChange={(event) => setTitle(event.target.value)}
-                    label="Image name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    error={titleError}
-                />
-
-                <div className={classes.field}>
-                    <input
-                        type="file"
-                        onChange={handleImage}
-                    />
-                </div>
-
-                <Button
-                    variant="contained"
-                    type="submit"
+    <Container>
+        { currentUser ? (
+            <Container>
+                <Typography
+                    variant="h6"
+                    component="h2"
                     color="primary"
-                    endIcon={<KeyboardArrowRightIcon/>}
+                    gutterBottom
                 >
-                    Submit
-                </Button>
-            </form>
-        </Container>
+                    Upload Image
+                </Typography>
+
+                <form
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit}
+                >
+                    <TextField
+                        className={classes.field}
+                        onChange={(event) => setTitle(event.target.value)}
+                        label="Image name"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        error={titleError}
+                    />
+
+                    <div className={classes.field}>
+                        <input
+                            type="file"
+                            onChange={handleImage}
+                        />
+                    </div>
+
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        endIcon={<KeyboardArrowRightIcon/>}
+                    >
+                        Submit
+                    </Button>
+                </form>
+            </Container>
+        ) : (
+            <Typography
+                variant="h1"
+            >
+                You have to login
+            </Typography>
+        )
+        }
+    </Container>
     );
 }

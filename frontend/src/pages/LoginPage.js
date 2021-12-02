@@ -3,6 +3,7 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
+import { useAlert  } from 'react-alert'
 import axios from "axios";
 
 import AuthService from "../services/AuthService";
@@ -27,11 +28,15 @@ export default function LoginPage() {
     const classes = useStyles()
     const history = useHistory()
 
+    const alert = useAlert()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
+
+    // const [alert, setAlert] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -47,6 +52,7 @@ export default function LoginPage() {
 
         if(email && password) {
             AuthService.login(email, password).then(() =>{
+                    alert.show("jó vagy")
                     history.push('/')
                 }
             )
@@ -56,6 +62,7 @@ export default function LoginPage() {
 
     return (
         <Container className={classes.container}>
+            {/*{alert ? <Alert severity="success" >Szép munka be tudtál jelentkezni</Alert>  : <></>}*/}
             <Typography
                 variant="h6"
                 component="h2"

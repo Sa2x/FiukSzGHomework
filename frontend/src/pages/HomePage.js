@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Container} from "@mui/material";
+import {Container, Typography} from "@mui/material";
 import ImageCard from "../components/cards/ImageCard";
 import Masonry from "react-masonry-css";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import authHeader from "../services/AuthHeader";
+import AuthService from "../services/AuthService";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`,
@@ -13,6 +14,9 @@ const api = axios.create({
 export default function HomePage() {
     const [images, setImages] = useState([])
     const history = useHistory()
+
+    const currentUser = AuthService.getCurrentUser()
+
 
     const breakpoints = {
         default: 3,
@@ -55,28 +59,38 @@ export default function HomePage() {
     }
 
     const handleDelete = async (image_id) => {
-       await api.delete(`/del/${image_id}`).then(() => {
+       await api.delete(`/del/${image_id}`, {headers: authHeader()}).then(() => {
            getImages()
        })
     }
 
     return (
         <Container>
-            <Masonry
-                breakpointCols={breakpoints}
-                className="my-masonry-grid"
-                columnClassName="my-masonry-grid_column"
-            >
-                {images.map(image => (
-                    <div key={image.id}>
-                        <ImageCard
-                            image={image}
-                            handleComment={handleComment}
-                            handleEdit={handleEdit}
-                            handleDelete={handleDelete} />
-                    </div>
-                ))}
-            </Masonry>
+            { currentUser ? (
+                    <Masonry
+                        breakpointCols={breakpoints}
+                        className="my-masonry-grid"
+                        columnClassName="my-masonry-grid_column"
+                    >
+                        {images.map(image => (
+                            <div key={image.id}>
+                                <ImageCard
+                                    image={image}
+                                    handleComment={handleComment}
+                                    handleEdit={handleEdit}
+                                    handleDelete={handleDelete} />
+                            </div>
+                        ))}
+                    </Masonry>
+                ) : (
+                    <Typography
+                        variant="h1"
+                    >
+                        You have to login
+                    </Typography>
+                )
+            }
         </Container>
+
     );
 }

@@ -6,6 +6,7 @@ import axios from "axios";
 import Masonry from "react-masonry-css";
 import CommentCard from "../components/cards/CommentCard";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import authHeader from "../services/AuthHeader";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`
@@ -55,12 +56,12 @@ export default function CommentPage() {
 
     useEffect(() => {
         getImage()
-        getPreview()
+        // getPreview()
     })
 
     const getImage = async () => {
         try {
-            await api.get(`/${image_id}`).then(res => {
+            await api.get(`/${image_id}`, {headers: authHeader()}).then(res => {
                 setImage(res.data)
             })
         } catch (err) {
@@ -68,15 +69,15 @@ export default function CommentPage() {
         }
     }
 
-    const getPreview = async () => {
-        try {
-            await api.get(`/${image_id}/preview`).then(res => {
-                setPreview(res.data)
-            })
-        } catch (err) {
-            console.log(err => console.log(err))
-        }
-    }
+    // const getPreview = async () => {
+    //     try {
+    //         await api.get(`/${image_id}/preview`, {headers: authHeader()}).then(res => {
+    //             setPreview(res.data)
+    //         })
+    //     } catch (err) {
+    //         console.log(err => console.log(err))
+    //     }
+    // }
 
      const addComment = async () => {
         const message = {
@@ -84,7 +85,7 @@ export default function CommentPage() {
             //TODO kiegészíetni
         }
 
-        await api.post(`/${image.id}/comments/new`, { message })
+        await api.post(`/${image.id}/comments/new`, message, {headers: authHeader()} )
              .catch(err => console.log(err))
      }
 
