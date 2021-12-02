@@ -6,6 +6,7 @@ import {makeStyles} from "@mui/styles";
 import {useHistory} from 'react-router-dom'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from "axios";
+import authMultipartHeader from "../services/AuthMultipartHeader";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`
@@ -23,6 +24,9 @@ export default function UploadPage() {
     const classes = useStyles()
     const history = useHistory()
 
+    const [title, setTitle] = useState('')
+    const [titleError, setTitleError] = useState(false)
+
     const [image, setImage] = useState(null)
     const [imageError, setImageError] = useState(false)
 
@@ -31,23 +35,48 @@ export default function UploadPage() {
             file: this.image
         }
 
-        await api.post('/new', { image })
+        await api.post('/new', {image})
             .catch(err => console.log(err))
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        setTitleError(false)
         setImageError(false)
 
-        if(image === null) {
+        console.log(image)
+
+        if (title === "") {
+            setTitleError(true)
+        }
+
+        if (image === null) {
             setImageError(true)
         }
 
-        if(image) {
-            uploadImage().then(() => {
-                history.push('/')
-            })
+        if (title && image) {
+            let formData = new FormData()
+            formData.append("file", `${image}`)
+            formData.append("name", `${title}`)
+
+            // uploadImage().then(() => {
+            //     history.push('/')
+            // })
+
+            api.post('/new', formData, { headers: authMultipartHeader() })
+                .then(res => {
+                    console.log(`Success` + res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         }
+    }
+
+    const handleImage = (e) => {
+        let image_as_base64 = URL.createObjectURL(e.target.files[0])
+        let image_as_files = e.target.files[0]
+        setImage(e.target.files[0])
     }
 
     return (
@@ -66,12 +95,20 @@ export default function UploadPage() {
                 autoComplete="off"
                 onSubmit={handleSubmit}
             >
-                <div className={classes.field} >
+                <TextField
+                    className={classes.field}
+                    onChange={(event) => setTitle(event.target.value)}
+                    label="Image name"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={titleError}
+                />
+
+                <div className={classes.field}>
                     <input
                         type="file"
-                        value={image}
-                        onChange={(e) => setImage(e.target.files[0])}
-                        error
+                        onChange={handleImage}
                     />
                 </div>
 
