@@ -1,6 +1,9 @@
 package szgbizt.fiuk.backend.Controllers;
 
 import com.sun.xml.bind.v2.schemagen.xmlschema.Any;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -116,6 +119,7 @@ public class WebShopController {
         Optional<User> foundUser = userRepository.findUserByEmail(user.getEmail());
 
         Image image = new Image();
+        image.setName(caff.getName());
         image.setCiffList(ciffs);
         image.setCreatedBy(creatorName);
         if(foundUser.isPresent()){
@@ -183,10 +187,30 @@ public class WebShopController {
             return new ResponseEntity("Only an admin can edit images!",HttpStatus.BAD_REQUEST);
         }
         if(Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())){
-            imageRepository.findById(id).ifPresent(foundImage -> imageRepository.save(image));
+            image.setId(id);
+            Image foundImage = imageRepository.findById(id).orElse(null);
+            copyNonNullProperties(image,foundImage);
+            imageRepository.save(foundImage);
             return ResponseEntity.ok(imageRepository.findById(id).get());
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    public static void copyNonNullProperties(Object src, Object target) {
+        BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
+    }
+
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) emptyNames.add(pd.getName());
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
     }
 
     //------------- COMMENTS ------------

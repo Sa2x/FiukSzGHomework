@@ -39,6 +39,8 @@ public class CustomConfig extends WebMvcConfigurationSupport {
         .allowedOrigins("*")
         .allowedMethods("GET", "DELETE", "PATCH", "POST", "PUT");
         }
+
+
 /*
     public MappingJackson2HttpMessageConverter jacksonMessageConverter(){
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
