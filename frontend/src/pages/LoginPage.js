@@ -62,7 +62,6 @@ export default function LoginPage() {
 
     return (
         <Container className={classes.container}>
-            {/*{alert ? <Alert severity="success" >Szép munka be tudtál jelentkezni</Alert>  : <></>}*/}
             <Typography
                 variant="h6"
                 component="h2"

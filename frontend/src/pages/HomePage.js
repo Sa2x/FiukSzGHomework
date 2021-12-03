@@ -17,7 +17,6 @@ export default function HomePage() {
 
     const currentUser = AuthService.getCurrentUser()
 
-
     const breakpoints = {
         default: 3,
         1100: 2,
@@ -33,62 +32,62 @@ export default function HomePage() {
             await api.get('/', {headers: authHeader()}).then(res => {
                 setImages(res.data)
             })
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
 
-    const handleComment = (id) => {
+    const handleComment = (image) => {
         history.push({
             pathname: '/comment',
             search: '?query=abc',
             state: {
-                id: id
+                image: image
             }
         })
     }
 
-    const handleEdit = (id) => {
+    const handleEdit = (image) => {
         history.push({
             pathname: '/edit',
             search: '?query=abc',
             state: {
-                id: id
+                image: image
             }
         })
     }
 
     const handleDelete = async (image_id) => {
-       await api.delete(`/del/${image_id}`, {headers: authHeader()}).then(() => {
-           getImages()
-       })
+        await api.delete(`/del/${image_id}`, {headers: authHeader()}).then(() => {
+            getImages()
+        })
     }
 
     return (
         <Container>
-            { currentUser ? (
-                    <Masonry
-                        breakpointCols={breakpoints}
-                        className="my-masonry-grid"
-                        columnClassName="my-masonry-grid_column"
-                    >
-                        {images.map(image => (
-                            <div key={image.id}>
-                                <ImageCard
-                                    image={image}
-                                    handleComment={handleComment}
-                                    handleEdit={handleEdit}
-                                    handleDelete={handleDelete} />
-                            </div>
-                        ))}
-                    </Masonry>
-                ) : (
-                    <Typography
-                        variant="h1"
-                    >
-                        You have to login
-                    </Typography>
-                )
+            {currentUser ? (
+                <Masonry
+                    breakpointCols={breakpoints}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column"
+                >
+                    {images.map(image => (
+                        <div key={image.id}>
+                            <ImageCard
+                                image={image}
+                                handleComment={handleComment}
+                                handleEdit={handleEdit}
+                                handleDelete={handleDelete}/>
+                        </div>
+                    ))}
+                </Masonry>
+            ) : (
+                <Typography
+                    variant="h1"
+                >
+                    You have to login
+                </Typography>
+            )
             }
         </Container>
 

@@ -1,5 +1,5 @@
 import {Card, CardContent, CardHeader, IconButton, Typography} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -22,25 +22,25 @@ export default function ImageCard({image, handleComment, handleEdit, handleDelet
         <div>
             <Card>
                 <CardHeader
-                    title={image.title}
+                    title={image.name}
                     subheader={
                         <div>
                             <div className={classes.subheader}>
                                 <PersonIcon/>
-                                <Typography>{image.created_by}</Typography>
+                                <Typography>{image.createdBy}</Typography>
                             </div>
                             <div className={classes.subheader}>
                                 <UploadIcon/>
-                                <Typography>{image.uploaded_by}</Typography>
+                                <Typography>{image.uploadedBy.email}</Typography>
                             </div>
                         </div>
                     }
                     action={
                         <div>
-                            <IconButton onClick={() => handleComment(image.id)}>
+                            <IconButton onClick={() => handleComment(image)}>
                                 <AddCommentIcon/>
                             </IconButton>
-                            <IconButton onClick={() => handleEdit(image.id)}>
+                            <IconButton onClick={() => handleEdit(image)}>
                                 <EditIcon/>
                             </IconButton>
                             <IconButton onClick={() => handleDelete(image.id)}>
@@ -50,7 +50,7 @@ export default function ImageCard({image, handleComment, handleEdit, handleDelet
                     }
                 />
                 <CardContent>
-                    <img src="logo192.png" alt="Logo" />
+                    <img src={image.ciffList.img} alt="Logo" />
                 </CardContent>
             </Card>
         </div>

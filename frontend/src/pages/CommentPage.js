@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React,{ useState} from "react";
 import {Button, Container, TextField, Typography} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import {makeStyles} from "@mui/styles";
@@ -7,6 +7,7 @@ import Masonry from "react-masonry-css";
 import CommentCard from "../components/cards/CommentCard";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import authHeader from "../services/AuthHeader";
+import {useAlert} from 'react-alert'
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`
@@ -31,84 +32,69 @@ const useStyle = makeStyles(() => ({
     },
     form: {
         display: "flex",
-        width: "100vh"
+        width: "50vh"
     }
 }));
 
 export default function CommentPage() {
     const classes = useStyle()
     const location = useLocation()
+    const alert = useAlert()
 
-    const image_id = location.state.id
+    const image = location.state.image
 
-    const [image, setImage] = useState([])
-    const [preview, setPreview] = useState([])
-
+    const [comments, setComments] = useState(image.comments)
 
     const [commentMessage, setCommentMessage] = useState('')
     const [commentMessageError, setCommentMessageError] = useState(false)
 
-    const breakpoints = {
-        default: 3,
-        1100: 2,
-        700: 1,
-    }
-
-    useEffect(() => {
-        getImage()
-        // getPreview()
-    })
-
-    const getImage = async () => {
+    const getComments = async () => {
         try {
-            await api.get(`/${image_id}`, {headers: authHeader()}).then(res => {
-                setImage(res.data)
-            })
+            await api.get(`/${image.id}/comments/`, {headers: authHeader()}).then(res =>
+                setComments(res.data)
+            )
         } catch (err) {
             console.log(err => console.log(err))
         }
     }
 
-    // const getPreview = async () => {
-    //     try {
-    //         await api.get(`/${image_id}/preview`, {headers: authHeader()}).then(res => {
-    //             setPreview(res.data)
-    //         })
-    //     } catch (err) {
-    //         console.log(err => console.log(err))
-    //     }
-    // }
-
-     const addComment = async () => {
+    const addComment = async () => {
         const message = {
-            comment: commentMessage
-            //TODO kiegészíetni
+            message: commentMessage
         }
 
-        await api.post(`/${image.id}/comments/new`, message, {headers: authHeader()} )
-             .catch(err => console.log(err))
-     }
+        await api.post(`/${image.id}/comments/new`, message, {headers: authHeader()})
+            .then(() => {
+                getComments()
+                alert.show("Írtál egy kommentet!")
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         setCommentMessageError(false)
 
-        if(commentMessage === '' ) {
+        if (commentMessage === '') {
             setCommentMessageError(true)
+            alert.show("Szöveg nélkül nehéz lesz bármit is küldeni")
         }
 
-        if(commentMessage) {
+        if (commentMessage) {
             addComment()
         }
     }
 
     const handleDelete = async (comment_id) => {
         try {
-            await api.delete(`/${image.id}/comments/del/${comment_id}`).then(() => {
-                getImage()
+            await api.delete(`/${image.id}/comments/del/${comment_id}`, {headers: authHeader()}).then(() => {
+                getComments()
             })
         } catch (err) {
             console.log(err => console.log(err))
+            alert.show("Itt nincs hatalmad")
         }
     }
 
@@ -120,7 +106,7 @@ export default function CommentPage() {
                 color="primary"
                 gutterBottom
             >
-                Image Details and Comment | Image id: {location.state.id}
+                Image Details and Comment | Image id: {image.id}
             </Typography>
 
             <div className={classes.row}>
@@ -140,12 +126,11 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    {image[0].name}
+                    {image.name}
                 </Typography>
             </div>
 
-            //TODO kép megjelenítés
-            <img src={preview} alt="Logo"/>
+            <img src={image.ciffList[0].img} alt="Logo"/>
 
             <div className={classes.row}>
                 <Typography
@@ -164,7 +149,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    {image[0].uploadedBy}
+                    {image.uploadedBy.email}
                 </Typography>
             </div>
 
@@ -185,7 +170,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    {image[0].createdBy}
+                    {image.createdBy}
                 </Typography>
             </div>
 
@@ -206,7 +191,7 @@ export default function CommentPage() {
                     gutterBottom
                     className={classes.subfield}
                 >
-                    {image[0].createdAt}
+                    {image.createdAt}
                 </Typography>
             </div>
 
@@ -247,15 +232,16 @@ export default function CommentPage() {
             </div>
 
             <Container>
-                 <Masonry
-                    breakpointCols={breakpoints}
+                <Masonry
                     className="my-masonry-grid"
-                    columnClassName="my-masonry-grid_column" >
-                    {image[0].comments.map(comment => (
+                    columnClassName="my-masonry-grid_column">
+                    {comments.map(comment => (
                         <div key={comment.id}>
-                            <CommentCard comment={comment} handleDelete={handleDelete}/>
+                            <CommentCard
+                                comment={comment}
+                                handleDelete={handleDelete}/>
                         </div>
-                        ))}
+                    ))}
                 </Masonry>
             </Container>
         </Container>

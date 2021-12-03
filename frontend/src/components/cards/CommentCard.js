@@ -2,7 +2,6 @@ import React from "react";
 import {Card, CardHeader, IconButton, Typography} from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import {makeStyles} from "@mui/styles";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const useStyle = makeStyles(() => ({
@@ -16,7 +15,7 @@ const useStyle = makeStyles(() => ({
     }
 }));
 
-export default function CommentCard({handleDelete}) {
+export default function CommentCard({comment, handleDelete}) {
     const classes = useStyle()
 
     return (
@@ -26,13 +25,13 @@ export default function CommentCard({handleDelete}) {
                     title={
                         <div className={classes.subheader}>
                             <PersonIcon/>
-                            <Typography>Sasasasa</Typography>
-                            <Typography className={classes.comment}>Imádom ezt a képet!</Typography>
+                            <Typography>{comment.createdBy.email}</Typography>
+                            <Typography className={classes.comment}>{comment.comment}</Typography>
                         </div>
                     }
                     action={
                         <div>
-                            <IconButton onClick={() => handleDelete(/*user.id*/ 1)} >
+                            <IconButton onClick={() => handleDelete(comment.id)} >
                                 <DeleteIcon/>
                             </IconButton>
                         </div>

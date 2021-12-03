@@ -8,6 +8,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import axios from "axios";
 import authMultipartHeader from "../services/AuthMultipartHeader";
 import AuthService from "../services/AuthService";
+import { useAlert  } from 'react-alert'
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`
@@ -32,13 +33,23 @@ export default function UploadPage() {
     const [image, setImage] = useState(null)
     const [imageError, setImageError] = useState(false)
 
-    const uploadImage = async () => {
-        const image = {
-            file: this.image
-        }
+    const alert = useAlert()
 
-        await api.post('/new', {image})
-            .catch(err => console.log(err))
+    const uploadImage = async () => {
+        let formData = new FormData()
+        formData.append("file", image)
+        formData.append("name", title)
+
+        alert.show("Dolgozunk az ügyön!")
+
+        await api.post('/new', formData, { headers: authMultipartHeader() })
+            .then(res => {
+                alert.show("Sikeres feltöltés főnököm!")
+            })
+            .catch(err => {
+                console.log(err)
+                alert.show("Baj van az erőben O-O")
+            })
     }
 
     const handleSubmit = (event) => {
@@ -50,34 +61,22 @@ export default function UploadPage() {
 
         if (title === "") {
             setTitleError(true)
+            alert.show("Ki kellene tölteni a név mezőt hát na!")
         }
 
         if (image === null) {
             setImageError(true)
+            alert.show("Kép kiválasztása nélkül nem fog menni!")
         }
 
         if (title && image) {
-            let formData = new FormData()
-            formData.append("file", image)
-            formData.append("name", title)
-
-            // uploadImage().then(() => {
-            //     history.push('/')
-            // })
-
-            api.post('/new', formData, { headers: authMultipartHeader() })
-                .then(res => {
-                    console.log(`Success` + res.data);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+            uploadImage().then(() => {
+                history.push('/')
+            })
         }
     }
 
     const handleImage = (e) => {
-        let image_as_base64 = URL.createObjectURL(e.target.files[0])
-        let image_as_files = e.target.files[0]
         setImage(e.target.files[0])
     }
 
