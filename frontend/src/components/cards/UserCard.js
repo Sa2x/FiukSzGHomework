@@ -29,7 +29,7 @@ export default function UserCard({user, handleEdit, handleDelete}) {
                     action={
                         <div>
                             <IconButton>
-                                <EditIcon onClick={() => handleEdit(user.id)}/>
+                                <EditIcon onClick={() => handleEdit(user)}/>
                             </IconButton>
                             <IconButton onClick={() => handleDelete(user.id)} >
                                 <DeleteIcon/>

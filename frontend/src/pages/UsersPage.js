@@ -39,12 +39,12 @@ export default function UsersPage() {
         }
     }
 
-    const handleEdit = (id) => {
+    const handleEdit = (user) => {
         history.push({
             pathname: '/user_edit',
             search: '?query=abc',
             state: {
-                id: id
+                user: user
             }
         })
     }
@@ -65,8 +65,10 @@ export default function UsersPage() {
                 columnClassName="my-masonry-grid_column" >
                 {users.map(user => (
                     <div key={user.id}>
-                        <UserCard user={user} handleEdit={handleEdit}
-                                  handleDelete={handleDelete}  />
+                        <UserCard
+                            user={user}
+                            handleEdit={handleEdit}
+                            handleDelete={handleDelete}  />
                     </div>
                 ))}
             </Masonry>

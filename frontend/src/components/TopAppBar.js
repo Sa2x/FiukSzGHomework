@@ -28,6 +28,14 @@ const useStyles = makeStyles(() => {
         },
         email: {
             paddingRight: '20px'
+        },
+        logout: {
+            fontFamily: 'Quicksand',
+            textDecoration: "none",
+            fontSize: '20px',
+            color: "black",
+            paddingTop: "2px"
+
         }
 }});
 
@@ -61,7 +69,7 @@ export default function TopAppBar() {
                         <Typography variant="h6" className={classes.email}>
                            {email}
                         </Typography>
-                        <a href="/login" onClick={AuthService.logout}>
+                        <a href="/login" className={classes.logout} onClick={AuthService.logout}>
                             LogOut
                         </a>
                     </div>
