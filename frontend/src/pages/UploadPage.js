@@ -40,7 +40,7 @@ export default function UploadPage() {
         formData.append("file", image)
         formData.append("name", title)
 
-        alert.show("Dolgozunk az ügyön!")
+        alert.show("Dolgozunk az ügyön! Kérlek várj!")
 
         await api.post('/new', formData, { headers: authMultipartHeader() })
             .then(res => {

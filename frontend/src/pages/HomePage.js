@@ -63,6 +63,8 @@ export default function HomePage() {
         })
     }
 
+    //TODO nincs hatalmad dolgok lekezése: alap user kapjon értesítést hogy nem törölhet és editálhat
+
     return (
         <Container>
             {currentUser ? (

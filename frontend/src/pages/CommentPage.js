@@ -1,4 +1,4 @@
-import React,{ useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Container, TextField, Typography} from "@mui/material";
 import {useLocation} from "react-router-dom";
 import {makeStyles} from "@mui/styles";
@@ -43,11 +43,26 @@ export default function CommentPage() {
 
     const image = location.state.image
 
-    const [comments, setComments] = useState(image.comments)
+    const [preview, setPreview] = useState([])
+    const [isLoaded, setIsLoaded] = useState(false)
 
+    const [comments, setComments] = useState(image.comments)
     const [commentMessage, setCommentMessage] = useState('')
     const [commentMessageError, setCommentMessageError] = useState(false)
 
+    useEffect(() => {
+        getPreview()
+    })
+
+    const getPreview = async () => {
+        await api.get(`${image.id}/preview`, {headers: authHeader()}).then(res => {
+            console.log(res.data)
+            setPreview(res.data)
+            setIsLoaded(true)
+        })
+    }
+
+    //TODO rosszul jön a comment backend javítsa meg ellenőrzés
     const getComments = async () => {
         try {
             await api.get(`/${image.id}/comments/`, {headers: authHeader()}).then(res =>
@@ -130,7 +145,12 @@ export default function CommentPage() {
                 </Typography>
             </div>
 
-            <img src={image.ciffList[0].img} alt="Logo"/>
+            {/*TODO kép megjelenítése*/}
+            { isLoaded ? (
+                <img src={`data:image/jpg;base64,${preview}`} alt="Logo"/>
+            ): (
+                <div/>
+            ) }
 
             <div className={classes.row}>
                 <Typography

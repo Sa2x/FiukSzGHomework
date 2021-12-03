@@ -17,6 +17,8 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
+//TODO ha be vagy jeelntkezve ne tudd megnyitni
+
 export default function RegisterPage() {
     const classes = useStyles()
     const history = useHistory()
