@@ -9,6 +9,8 @@ import AuthService from "../services/AuthService";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useAlert} from "react-alert";
+import { saveAs } from 'file-saver';
+
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`,
@@ -74,6 +76,11 @@ export default function HomePage() {
                 image: image
             }
         })
+    }
+
+    const handleDownload = (id) => {
+        let win = window.open(`http://localhost:8080/api/images/${id}/preview`, '_blank')
+        win.focus()
     }
 
     const handleEdit = (image) => {
@@ -178,6 +185,7 @@ export default function HomePage() {
                                     <ImageCard
                                         image={image}
                                         handleComment={handleComment}
+                                        handleDownload={handleDownload}
                                         handleEdit={handleEdit}
                                         handleDelete={handleDelete}/>
                                 </div>

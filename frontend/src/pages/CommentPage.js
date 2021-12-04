@@ -123,7 +123,7 @@ export default function CommentPage() {
   return (
     <Container>
       <Typography variant="h5" component="h2" color="primary" gutterBottom>
-        Image Details and Comment | Image id: {image.id}
+        Image Details and Comment
       </Typography>
 
       <div className={classes.row}>
