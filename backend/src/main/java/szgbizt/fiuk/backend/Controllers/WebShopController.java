@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/images")
@@ -42,42 +43,47 @@ public class WebShopController {
 
     @Transactional
     @GetMapping(value = "/")
-    public ResponseEntity<List<Image>> getAllImages(@Auth User user){
-        return ResponseEntity.ok(imageRepository.findAll());
+    public ResponseEntity<List<Image>> getAllImages(@Auth User user) {
+        List<Image> images = imageRepository.findAll();
+        images.forEach(image ->
+                image.setPreviewUrl("http://localhost:8080/api/images/" + Long.toString(image.getId(), 10) + "/preview"));
+        return ResponseEntity.ok(images);
     }
 
     @Transactional
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Image> getImage(@PathVariable long id,@Auth User user){
-        return ResponseEntity.ok(imageRepository.findById(id).get());
+    public ResponseEntity<Image> getImage(@PathVariable long id, @Auth User user) {
+        Image image = imageRepository.findById(id).get();
+        image.setPreviewUrl("http://localhost:8080/api/images/" + Long.toString(image.getId(), 10) + "/preview");
+        return ResponseEntity.ok(image);
     }
 
-    @GetMapping(value ="/{id}/preview")
-    public ResponseEntity<byte[]> getImagePreview(@PathVariable long id,@Auth User user){
-        try{
+    @GetMapping(value = "/{id}/preview")
+    public ResponseEntity<byte[]> getImagePreview(@PathVariable long id) {
+        try {
             Optional<Image> image = imageRepository.findById(id);
-            if(image.isPresent()){
+            if (image.isPresent()) {
                 byte[] imageBytes = image.get().getCiffList().get(0).getImg();
                 String header = "attachment; filename=" + String.valueOf(System.currentTimeMillis()) + ".jpg";
                 return ResponseEntity.ok().contentType(MediaType.parseMediaType(MediaType.IMAGE_JPEG_VALUE))
                         .header(HttpHeaders.CONTENT_DISPOSITION, header) //TODO
                         .body(imageBytes);
             }
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         }
         return new ResponseEntity("Something went wrong in the preview!", HttpStatus.BAD_REQUEST);
     }
 
     @Transactional
-    @PostMapping(value = "/new",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Image> createImage(@ModelAttribute CaffDTO caff, @Auth User user){
+    @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Image> createImage(@Auth User user, @ModelAttribute CaffDTO caff) {
         String output = "";
         try {
             File file = new File("file.caff");
             FileOutputStream fileWriter = new FileOutputStream(file);
             fileWriter.write(caff.getFile().getBytes());
-            output = new ProcessExecutor().command("./caffparser","file.caff").readOutput(true).execute().outputString();
+            output = new ProcessExecutor().command("./caffparser", "file.caff").readOutput(true).execute().outputString();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -111,7 +117,7 @@ public class WebShopController {
         int creationMinute = Integer.parseInt(scanner.nextLine().split(":")[1]);
         int numberOfAnimations = Integer.parseInt(scanner.nextLine().split(":")[1]);
         List<Ciff> ciffs = new ArrayList<>();
-        for(int i = 0; i < numberOfAnimations; i++){
+        for (int i = 0; i < numberOfAnimations; i++) {
             ciffs.add(ciffParser(scanner));
         }
         scanner.close();
@@ -122,18 +128,18 @@ public class WebShopController {
         image.setName(caff.getName());
         image.setCiffList(ciffs);
         image.setCreatedBy(creatorName);
-        if(foundUser.isPresent()){
+        if (foundUser.isPresent()) {
             image.setUploadedBy(foundUser.get()); // EZ PROBLÉMÁS MERT SZAR
         }
         image.setComments(null);
-        LocalDateTime localDate = LocalDateTime.of(creationYear,creationMonth,creationDay,creationHour,creationMinute);
+        LocalDateTime localDate = LocalDateTime.of(creationYear, creationMonth, creationDay, creationHour, creationMinute);
         image.setCreatedAt(Timestamp.valueOf(localDate));
 
         //imageRepository.save(image);
         return ResponseEntity.ok(imageRepository.save(image));
     }
 
-    private Ciff ciffParser(Scanner scanner){
+    private Ciff ciffParser(Scanner scanner) {
         int duration = Integer.parseInt(scanner.nextLine().split(":")[1].trim());
         //WIDTH ÉS HEIGHT DOLGOT NÉZD ÁT MÉG
         int width = Integer.parseInt(scanner.nextLine().split(":")[1].trim());
@@ -144,22 +150,22 @@ public class WebShopController {
         String caption = scanner.nextLine().split(":")[1];
         List<String> tags = List.of(scanner.nextLine().split(":")[1].split(" "));
         //TODO: Tageket tovább bontani, mert most egyben vannak eltárolva, hiányzik még egy split hívás, ahol a regex egy whitespace
-        for(int rowCounter = 0; rowCounter < height; rowCounter++){
+        for (int rowCounter = 0; rowCounter < height; rowCounter++) {
             String row = scanner.nextLine();
             String[] pixels = row.split(";");
-            for(int columnCounter = 0; columnCounter < width ; columnCounter++){
+            for (int columnCounter = 0; columnCounter < width; columnCounter++) {
                 String[] pixel = pixels[columnCounter].split(",");
-                int r = Integer.parseInt(pixel[0].replace("(","")); // trim the ( from the beggining
+                int r = Integer.parseInt(pixel[0].replace("(", "")); // trim the ( from the beggining
                 int g = Integer.parseInt(pixel[1].trim());
-                int b = Integer.parseInt(pixel[2].replace(")",""));
-                int p = (r << 16) | (g << 8)| b;
-                img.setRGB(columnCounter,rowCounter,p);
+                int b = Integer.parseInt(pixel[2].replace(")", ""));
+                int p = (r << 16) | (g << 8) | b;
+                img.setRGB(columnCounter, rowCounter, p);
             }
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean foundWriter = false;
         try {
-            foundWriter = ImageIO.write(img,"jpg",baos);
+            foundWriter = ImageIO.write(img, "jpg", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,29 +173,29 @@ public class WebShopController {
         byte[] bytes = baos.toByteArray();
 
 
-        return new Ciff(bytes,caption,tags);
+        return new Ciff(bytes, caption, tags);
 
     }
 
 
-    @DeleteMapping(value="/del/{id}")
-    public ResponseEntity<String> deleteImage(@PathVariable long id,@Auth User user){
-        if(!user.isAdmin()){
-            return new ResponseEntity("Only an admin can delete images!",HttpStatus.BAD_REQUEST);
+    @DeleteMapping(value = "/del/{id}")
+    public ResponseEntity<String> deleteImage(@PathVariable long id, @Auth User user) {
+        if (!user.isAdmin()) {
+            return new ResponseEntity("Only an admin can delete images!", HttpStatus.BAD_REQUEST);
         }
         imageRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/edit/{id}",consumes = "application/json")
-    public ResponseEntity<Image> editImage(@PathVariable long id,@RequestBody Image image, @Auth User user){
-        if(!user.isAdmin()){
-            return new ResponseEntity("Only an admin can edit images!",HttpStatus.BAD_REQUEST);
+    @PutMapping(value = "/edit/{id}", consumes = "application/json")
+    public ResponseEntity<Image> editImage(@PathVariable long id, @RequestBody Image image, @Auth User user) {
+        if (!user.isAdmin()) {
+            return new ResponseEntity("Only an admin can edit images!", HttpStatus.BAD_REQUEST);
         }
-        if(Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())){
+        if (Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())) {
             image.setId(id);
             Image foundImage = imageRepository.findById(id).orElse(null);
-            copyNonNullProperties(image,foundImage);
+            copyNonNullProperties(image, foundImage);
             imageRepository.save(foundImage);
             return ResponseEntity.ok(imageRepository.findById(id).get());
         }
@@ -200,12 +206,12 @@ public class WebShopController {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
     }
 
-    public static String[] getNullPropertyNames (Object source) {
+    public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
         Set<String> emptyNames = new HashSet<String>();
-        for(java.beans.PropertyDescriptor pd : pds) {
+        for (java.beans.PropertyDescriptor pd : pds) {
             Object srcValue = src.getPropertyValue(pd.getName());
             if (srcValue == null) emptyNames.add(pd.getName());
         }
@@ -215,25 +221,25 @@ public class WebShopController {
 
     //------------- COMMENTS ------------
 
-    @GetMapping(value = "/{imageId}/comments",produces = "application/json")
-    public ResponseEntity<List<Comment>> getComments(@PathVariable long imageId,@Auth User user){
+    @GetMapping(value = "/{imageId}/comments", produces = "application/json")
+    public ResponseEntity<List<Comment>> getComments(@PathVariable long imageId, @Auth User user) {
         //TODO
         Optional<Image> image = imageRepository.findById(imageId);
-        if(image.isPresent()){
+        if (image.isPresent()) {
             return new ResponseEntity(image.get().getComments(), HttpStatus.OK);
         }
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping(value = "/{imageId}/comments/new",consumes = "application/json")
-    public ResponseEntity<String> createComment(@PathVariable long imageId,@RequestBody String comment,@Auth User user){
+    @PostMapping(value = "/{imageId}/comments/new", consumes = "application/json")
+    public ResponseEntity<String> createComment(@PathVariable long imageId, @RequestBody String comment, @Auth User user) {
         //TODO: Befejezni
         Optional<Image> image = imageRepository.findById(imageId);
         Optional<User> foundUser = userRepository.findUserByEmail(user.getEmail());
-        if(image.isPresent()){
+        if (image.isPresent()) {
             Comment realComment = new Comment();
             realComment.setComment(comment);
-            if(foundUser.isPresent()){
+            if (foundUser.isPresent()) {
                 realComment.setCreatedBy(foundUser.get());
             }
             realComment.setCreatedAt(Calendar.getInstance().getTime());
@@ -245,21 +251,17 @@ public class WebShopController {
     }
 
     @DeleteMapping(value = "/{imageId}/comments/del/{commentId}")
-    public ResponseEntity<Any> deleteComment(@PathVariable long imageId, @PathVariable long commentId,@Auth User user){
-        if(!user.isAdmin()){
-            return new ResponseEntity("You are not an admin!",HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Any> deleteComment(@PathVariable long imageId, @PathVariable long commentId, @Auth User user) {
+        if (!user.isAdmin()) {
+            return new ResponseEntity("You are not an admin!", HttpStatus.BAD_REQUEST);
         }
         Optional<Image> image = imageRepository.findById(imageId);
-        if(image.isPresent()){
+        if (image.isPresent()) {
             image.get().getComments().removeIf(comment -> comment.getId() == commentId);
             imageRepository.save(image.get());
         }
         return ResponseEntity.ok().build();
     }
-
-
-
-
 
 
 }
