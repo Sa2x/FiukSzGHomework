@@ -1,6 +1,6 @@
 package szgbizt.fiuk.backend;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,16 +23,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WebShopControllerTest {
 
     @Autowired
-    ImageRepository imageRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    WebShopController webShopController;
+    private WebShopController webShopController;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         userRepository.deleteAll();
         imageRepository.deleteAll();
     }
@@ -63,20 +63,10 @@ public class WebShopControllerTest {
     }
 
     @Test
-    void getImagePreview() {
-        // TODO
-    }
-
-    @Test
     void getImagePreviewNoImage() {
         ResponseEntity<byte[]> imagePreview = webShopController.getImagePreview(1);
 
         assertEquals(imagePreview.getStatusCode(), HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void createImage() {
-        // TODO: finish the body, and create tests for the two catchable exceptions
     }
 
     @Test
