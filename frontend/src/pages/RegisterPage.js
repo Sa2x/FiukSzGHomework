@@ -3,6 +3,7 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -16,23 +17,25 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
+//TODO ha be vagy jeelntkezve ne tudd megnyitni
+
 export default function RegisterPage() {
     const classes = useStyles()
     const history = useHistory()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordConfirm, setPasswordConfirm] = useState('')
+    const [confirmedPassword, setConfirmedPassword] = useState('')
 
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
-    const [passwordConfirmError, setPasswordConfirmError] = useState(false)
-
+    const [confirmedPasswordError, setConfirmedPasswordError] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault()
         setEmailError(false)
         setPasswordError(false)
+        setConfirmedPasswordError(false)
 
         if (email === '') {
             setEmailError(true)
@@ -40,13 +43,22 @@ export default function RegisterPage() {
         if (password === '') {
             setPasswordError(true)
         }
-        if (passwordConfirm === '') {
-            setPasswordConfirmError(true)
+        if (confirmedPassword === '') {
+            setConfirmedPasswordError(true)
         }
 
-        if(email && password && passwordConfirmError) {
-            history.push('/')
+        if(email && password && confirmedPassword) {
+            AuthService.register(
+                email,
+                password,
+                confirmedPassword
+            ).then(() => {
+                    history.push('/login')
+                }
+            )
         }
+
+        //TODO handle wrong cumo
     }
 
     return (
@@ -57,7 +69,7 @@ export default function RegisterPage() {
                 color="primary"
                 gutterBottom
             >
-                Login
+                Register
             </Typography>
 
             <form
@@ -87,12 +99,12 @@ export default function RegisterPage() {
 
                 <TextField
                     className={classes.field}
-                    onChange={(event) => setPasswordConfirm(event.target.value)}
+                    onChange={(event) => setConfirmedPassword(event.target.value)}
                     label="Password Confirm"
                     variant="outlined"
                     fullWidth
                     required
-                    error={passwordConfirmError}
+                    error={confirmedPasswordError}
                 />
 
                 <Button

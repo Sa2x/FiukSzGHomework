@@ -2,7 +2,7 @@ import {createTheme, ThemeProvider} from "@mui/material";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
-import {amber} from "@mui/material/colors";
+import {amber, blueGrey} from "@mui/material/colors";
 import UploadPage from "./pages/UploadPage";
 import UsersPage from "./pages/UsersPage";
 import EditPage from "./pages/EditPage";
@@ -13,7 +13,8 @@ import UserEditPage from "./pages/UserEditPage";
 
 const theme = createTheme({
     palette: {
-        primary: amber
+        primary: amber,
+        secondary: blueGrey
     },
     typography: {
         fontFamily: 'Quicksand',

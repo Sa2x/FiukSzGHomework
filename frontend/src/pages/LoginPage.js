@@ -3,6 +3,9 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
+import { useAlert  } from 'react-alert'
+
+import AuthService from "../services/AuthService"
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -20,12 +23,15 @@ export default function LoginPage() {
     const classes = useStyles()
     const history = useHistory()
 
+    const alert = useAlert()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
 
+    // const [alert, setAlert] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -40,8 +46,13 @@ export default function LoginPage() {
         }
 
         if(email && password) {
-            history.push('/')
+            AuthService.login(email, password).then(() =>{
+                    alert.show("jó vagy")
+                    history.push('/')
+                }
+            )
         }
+        //TODO handle wrong cumo
     }
 
     return (
