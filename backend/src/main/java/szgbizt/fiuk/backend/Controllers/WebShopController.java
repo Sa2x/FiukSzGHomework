@@ -192,14 +192,11 @@ public class WebShopController {
         if (!user.isAdmin()) {
             return new ResponseEntity("Only an admin can edit images!", HttpStatus.BAD_REQUEST);
         }
-        if (Objects.equals(imageRepository.findById(id).get().getUploadedBy().getId(), user.getId())) {
-            image.setId(id);
-            Image foundImage = imageRepository.findById(id).orElse(null);
-            copyNonNullProperties(image, foundImage);
-            imageRepository.save(foundImage);
-            return ResponseEntity.ok(imageRepository.findById(id).get());
-        }
-        return ResponseEntity.badRequest().build();
+        image.setId(id);
+        Image foundImage = imageRepository.findById(id).orElse(null);
+        copyNonNullProperties(image, foundImage);
+        imageRepository.save(foundImage);
+        return ResponseEntity.ok(imageRepository.findById(id).get());
     }
 
     public static void copyNonNullProperties(Object src, Object target) {
