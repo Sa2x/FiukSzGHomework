@@ -39,10 +39,14 @@ public class UserControllerTest {
     @Test
     void userLoginSuccessful() {
         User user = initBasicUser();
-        userRepository.save(user);
+        RegisterDTO registerDTO = new RegisterDTO();
+        registerDTO.setPassword(user.getPassword());
+        registerDTO.setConfirmedPassword(user.getPassword());
+        registerDTO.setEmail(user.getEmail());
+        userController.userRegister(registerDTO);
 
         ResponseEntity<TokenDTO> tokenDTOResponseEntity = userController.userLogin(user);
-        System.out.println(tokenDTOResponseEntity.getBody().getToken());
+
         assertEquals(tokenDTOResponseEntity.getStatusCode(), HttpStatus.OK);
     }
 
