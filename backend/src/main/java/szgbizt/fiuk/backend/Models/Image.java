@@ -25,8 +25,11 @@ public class Image {
     private List<Ciff> ciffList;
 
     @ManyToOne
-    @Cascade(value= org.hibernate.annotations.CascadeType.MERGE)
+    @Cascade(value = org.hibernate.annotations.CascadeType.MERGE)
     private User uploadedBy;
+
+    @Transient
+    private String previewUrl;
 
     private String createdBy;
 
@@ -91,5 +94,13 @@ public class Image {
 
     public void setCiffList(List<Ciff> ciffList) {
         this.ciffList = ciffList;
+    }
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
+    public void setPreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
     }
 }
