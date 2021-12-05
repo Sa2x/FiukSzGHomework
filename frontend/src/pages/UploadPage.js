@@ -31,7 +31,6 @@ export default function UploadPage() {
     const [titleError, setTitleError] = useState(false)
 
     const [image, setImage] = useState(null)
-    const [imageError, setImageError] = useState(false)
 
     const alert = useAlert()
 
@@ -55,7 +54,6 @@ export default function UploadPage() {
     const handleSubmit = (event) => {
         event.preventDefault()
         setTitleError(false)
-        setImageError(false)
 
         console.log(image)
 
@@ -65,7 +63,6 @@ export default function UploadPage() {
         }
 
         if (image === null) {
-            setImageError(true)
             alert.show("Kép kiválasztása nélkül nem fog menni!")
         }
 

@@ -5,7 +5,7 @@ import {
     IconButton,
     Typography,
 } from '@mui/material';
-import React, {useEffect} from 'react';
+import React from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';

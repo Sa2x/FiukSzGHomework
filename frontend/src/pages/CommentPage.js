@@ -43,7 +43,6 @@ export default function CommentPage() {
 
   const image = location.state.image;
 
-  const [preview, setPreview] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [comments, setComments] = useState(image.comments);
@@ -58,13 +57,10 @@ export default function CommentPage() {
     await api
       .get(`${image.id}/preview`, { headers: authHeader() })
       .then((res) => {
-        console.log(res.data);
-        setPreview(res.data);
         setIsLoaded(true);
       });
   };
 
-  //TODO rosszul jön a comment backend javítsa meg ellenőrzés
   const getComments = async () => {
     try {
       await api

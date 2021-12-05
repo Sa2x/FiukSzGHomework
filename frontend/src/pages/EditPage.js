@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { Button, Container, TextField, Typography } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { makeStyles } from '@mui/styles';
 import axios from 'axios';
 import { useAlert } from 'react-alert';
-import Masonry from 'react-masonry-css';
-import CommentCard from '../components/cards/CommentCard';
 import authHeader from '../services/AuthHeader';
 
 const api = axios.create({
@@ -46,13 +44,15 @@ export default function EditPage() {
   const [titleError, setTitleError] = useState(false);
 
   const updateUser = async () => {
-    const newImage = {
-      name: title,
-    };
+    const newImage = image
+    newImage.name = title
 
     await api
       .put(`/edit/${image.id}`, newImage, { headers: authHeader() })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err)
+        alert.show("Ehhez nincs jogod")
+      });
   };
 
   const handleSubmit = (event) => {
@@ -65,8 +65,8 @@ export default function EditPage() {
 
     if (title) {
       updateUser().then(() => {
-        alert.show('Jól átírtuk :D');
         history.push('/');
+        alert.show("Jól átírtuk")
       });
     }
   };

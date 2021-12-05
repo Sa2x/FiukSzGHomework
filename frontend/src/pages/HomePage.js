@@ -9,8 +9,6 @@ import AuthService from "../services/AuthService";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useAlert} from "react-alert";
-import { saveAs } from 'file-saver';
-
 
 const api = axios.create({
     baseURL: `http://localhost:8080/api/images/`,

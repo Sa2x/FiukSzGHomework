@@ -4,13 +4,8 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {makeStyles} from "@mui/styles";
 import {useHistory} from "react-router-dom";
 import { useAlert  } from 'react-alert'
-import axios from "axios";
 
-import AuthService from "../services/AuthService";
-
-const api = axios.create({
-    baseURL: `http://localhost:8080/user/`
-})
+import AuthService from "../services/AuthService"
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -23,8 +18,6 @@ const useStyles = makeStyles(() => ({
         display: 'block',
     },
 }));
-
-//TODO ha be vagy jeelntkezve ne tudd megnyitni
 
 export default function LoginPage() {
     const classes = useStyles()

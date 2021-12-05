@@ -6,6 +6,7 @@ import {useHistory} from "react-router-dom";
 import axios from "axios";
 import authHeader from "../services/AuthHeader";
 import AuthService from "../services/AuthService";
+import {useAlert} from "react-alert";
 
 const api = axios.create({
     baseURL: `http://localhost:8080/user/`
@@ -13,6 +14,7 @@ const api = axios.create({
 
 export default function UsersPage() {
     const history = useHistory()
+    const alert = useAlert()
     const [users, setUsers] = useState([])
 
     const currentUser = AuthService.getCurrentUser()

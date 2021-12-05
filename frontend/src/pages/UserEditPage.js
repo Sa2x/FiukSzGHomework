@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import {Button, Container, TextField, Typography} from "@mui/material";
 import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
@@ -50,7 +50,11 @@ export default function UserEditPage() {
         }
 
         await api.put(`/edit/${user.id}`, newUser, {headers: authHeader()})
-            .catch(err => console.log(err))
+            .then(alert.show('Szépen megváltoztattuk, így most nem fog tudni belépni'))
+            .catch(err => {
+                console.log(err)
+                alert.show("Ehhez nincs jogod!")
+            })
     }
 
     const handleSubmit = (event) => {
@@ -58,12 +62,10 @@ export default function UserEditPage() {
 
         if(newEmail === "") {
             setNewEmailError(true)
-            alert.show("Üres a mező ez így nem fog menni!")
         }
 
         if(newEmail) {
             updateUser().then(() => {
-                alert.show("Szépen megváltoztattuk, így most nem fog tudni belépni, ggwp")
                 history.push('/users')
             })
         }
