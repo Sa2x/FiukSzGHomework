@@ -7,11 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import szgbizt.fiuk.backend.Controllers.WebShopController;
+import szgbizt.fiuk.backend.Models.Comment;
 import szgbizt.fiuk.backend.Models.Image;
 import szgbizt.fiuk.backend.Models.User;
 import szgbizt.fiuk.backend.Repositories.ImageRepository;
 import szgbizt.fiuk.backend.Repositories.UserRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,10 +133,74 @@ public class WebShopControllerTest {
 
     @Test
     void getComments() {
+        User defaultUser = createDefaultUser();
+        Image image = createDefaultImage(defaultUser, "image");
+        Comment comment1 = new Comment();
+        comment1.setComment("comment1");
+        image.setComments(Arrays.asList(comment1));
+        Long id = imageRepository.findAll().get(0).getId();
 
+        ResponseEntity<List<Comment>> comments = webShopController.getComments(id, defaultUser);
+
+        assertEquals(Objects.requireNonNull(comments.getBody()).get(0).getComment(), "comment1");
     }
 
+    @Test
+    void getCommentsNoImage() {
+        ResponseEntity<List<Comment>> comments = webShopController.getComments(0, createDefaultUser());
 
+        assertEquals(comments.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void createComment() {
+        User defaultUser = createDefaultUser();
+        createDefaultImage(defaultUser, "image");
+        Long id = imageRepository.findAll().get(0).getId();
+
+        ResponseEntity<String> comment = webShopController.createComment(id, "comment", defaultUser);
+
+        assertEquals(imageRepository.findById(id).get().getComments().get(0).getComment(), "comment");
+    }
+
+    @Test
+    void createCommentNoImage() {
+        ResponseEntity<String> comment = webShopController.createComment(0, "comment", createDefaultUser());
+
+        assertEquals(comment.getStatusCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void deleteComment() {
+        User defaultUser = createDefaultUser();
+        Image image = createDefaultImage(defaultUser, "image");
+        Comment comment = new Comment();
+        comment.setComment("comment");
+        image.setComments(Arrays.asList(comment));
+        imageRepository.save(image);
+        User adminUser = createAdminUser();
+        Long id = imageRepository.findAll().get(0).getId();
+
+        webShopController.deleteComment(id, image.getComments().get(0).getId(), adminUser);
+
+        assertEquals(imageRepository.getById(id).getComments().size(), 0);
+    }
+
+    @Test
+    void deleteCommentNotAdmin() {
+        User defaultUser = createDefaultUser();
+        Image image = createDefaultImage(defaultUser, "image");
+        Comment comment = new Comment();
+        comment.setComment("comment");
+        image.setComments(Arrays.asList(comment));
+        imageRepository.save(image);
+        User adminUser = createAdminUser();
+        Long id = imageRepository.findAll().get(0).getId();
+
+        webShopController.deleteComment(id, image.getComments().get(0).getId(), adminUser);
+
+        assertEquals(imageRepository.getById(id).getComments().size(), 0);
+    }
 
 
 
