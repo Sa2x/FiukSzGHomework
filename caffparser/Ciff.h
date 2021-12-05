@@ -39,7 +39,7 @@ public:
         std::cout<<'\n';
         for(int i = 0; i < height;i++){
             for(int j = 0; j < width; j++){
-                std::cout<<'('<<pixels.at(i*j+0)<<','<<pixels.at(i*j+1)<<','<<pixels.at(i*j+2)<<"),";
+                std::cout<<'('<<pixels.at(i*j+0)<<','<<pixels.at(i*j+1)<<','<<pixels.at(i*j+2)<<");";
             }
             std::cout<<'\n';
         }
