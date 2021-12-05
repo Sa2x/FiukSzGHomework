@@ -42,7 +42,7 @@ public class UserControllerTest {
         userRepository.save(user);
 
         ResponseEntity<TokenDTO> tokenDTOResponseEntity = userController.userLogin(user);
-
+        System.out.println(tokenDTOResponseEntity.getBody().getToken());
         assertEquals(tokenDTOResponseEntity.getStatusCode(), HttpStatus.OK);
     }
 
