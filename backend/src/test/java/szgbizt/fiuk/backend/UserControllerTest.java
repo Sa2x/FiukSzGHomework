@@ -43,7 +43,7 @@ public class UserControllerTest {
 
         ResponseEntity<TokenDTO> tokenDTOResponseEntity = userController.userLogin(user);
 
-        assertTrue(tokenDTOResponseEntity.getStatusCode().is2xxSuccessful());
+        assertEquals(tokenDTOResponseEntity.getStatusCode(), HttpStatus.OK);
     }
 
     @Test

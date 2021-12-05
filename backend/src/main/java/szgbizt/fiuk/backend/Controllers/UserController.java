@@ -53,11 +53,12 @@ public class UserController {
                         .signWith(SignatureAlgorithm.HS512, "secret")
                         .compact();
                 return ResponseEntity.ok(new TokenDTO(jwt));
+            } else {
+                return new ResponseEntity(new TokenDTO("Wrong Password!"),HttpStatus.BAD_REQUEST);
             }
-        }else{
-            return new ResponseEntity(new TokenDTO("Wrong Password!"),HttpStatus.BAD_REQUEST);
+        } else{
+            return new ResponseEntity(new TokenDTO("Wrong email!"),HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(new TokenDTO("Wrong email!"),HttpStatus.BAD_REQUEST);
     }
 
     //MUKSZIK
