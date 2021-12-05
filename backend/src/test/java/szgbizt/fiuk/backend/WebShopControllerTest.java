@@ -67,9 +67,7 @@ public class WebShopControllerTest {
 
     @Test
     void getImagePreviewNoImage() {
-        User adminUser = createAdminUser();
-
-        ResponseEntity<byte[]> imagePreview = webShopController.getImagePreview(1, adminUser);
+        ResponseEntity<byte[]> imagePreview = webShopController.getImagePreview(1);
 
         assertEquals(imagePreview.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
