@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
 
     private String email;
 
@@ -15,11 +15,11 @@ public class User {
 
     private boolean admin;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

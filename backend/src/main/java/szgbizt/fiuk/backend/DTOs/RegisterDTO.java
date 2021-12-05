@@ -6,11 +6,11 @@ import javax.persistence.Entity;
 //Ilyen alakban jön a JSON a Frontendtől regisztrációnál, ebből kell csinálni a Profile-t
 public class RegisterDTO {
 
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
-    String confirmedPassword;
+    private String confirmedPassword;
 
     public String getConfirmedPassword() {
         return confirmedPassword;
@@ -22,5 +22,17 @@ public class RegisterDTO {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setConfirmedPassword(String confirmedPassword) {
+        this.confirmedPassword = confirmedPassword;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
